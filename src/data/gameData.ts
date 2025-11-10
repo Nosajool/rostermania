@@ -1,43 +1,6 @@
 // Real VCT 2025 data scraped from VLR.gg and official sources
 
-import { Region, Role, Map } from './types';
-
-// All Valorant Agents (27 as of 2025)
-export const AGENTS = {
-  // Duelists
-  JETT: 'Jett',
-  PHOENIX: 'Phoenix',
-  REYNA: 'Reyna',
-  RAZE: 'Raze',
-  YORU: 'Yoru',
-  NEON: 'Neon',
-  ISO: 'Iso',
-  
-  // Controllers
-  BRIMSTONE: 'Brimstone',
-  VIPER: 'Viper',
-  OMEN: 'Omen',
-  ASTRA: 'Astra',
-  HARBOR: 'Harbor',
-  CLOVE: 'Clove',
-  
-  // Initiators
-  SOVA: 'Sova',
-  BREACH: 'Breach',
-  SKYE: 'Skye',
-  KAY_O: 'KAY/O',
-  FADE: 'Fade',
-  GEKKO: 'Gekko',
-  TEJO: 'Tejo',
-  
-  // Sentinels
-  SAGE: 'Sage',
-  CYPHER: 'Cypher',
-  KILLJOY: 'Killjoy',
-  CHAMBER: 'Chamber',
-  DEADLOCK: 'Deadlock',
-  VYSE: 'Vyse',
-} as const;
+import type { Region, Role, Map } from '../types/types';
 
 // Competitive Maps (Active in VCT 2025)
 export const MAPS: Map[] = [
