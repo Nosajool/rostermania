@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import type { Region } from '../types/types';
-import { useGame } from '../hooks/useGame';
 import RosterView from './RosterView';
 import ScheduleView from './ScheduleView';
 import StandingsView from './StandingsView';
+import { useGame } from '../hooks/useGame';
 import './Dashboard.css';
 
 interface DashboardProps {
@@ -16,9 +16,43 @@ type DashboardTab = 'overview' | 'roster' | 'schedule' | 'standings';
 export default function Dashboard({ teamName, region }: DashboardProps) {
   const [activeTab, setActiveTab] = useState<DashboardTab>('roster');
   const { schedule } = useGame();
-
+  
+  // Calculate wins and losses from actual match results
   const wins = schedule.filter(m => m.winner?.name === teamName).length;
-  const losses = schedule.filter(m => m.winner && m.winner.name !== teamName && (m.teamA.name === teamName || m.teamB.name === teamName)).length;
+  const losses = schedule.filter(m => 
+    m.winner && 
+    m.winner.name !== teamName && 
+    (m.teamA.name === teamName || m.teamB.name === teamName)
+  ).length;
+
+  // Calculate map and round differentials
+  let mapDifferential = 0;
+  let roundDifferential = 0;
+
+  schedule.forEach(match => {
+    if (!match.maps || !match.winner) return;
+    
+    const isTeamA = match.teamA.name === teamName;
+    const isTeamB = match.teamB.name === teamName;
+    
+    if (!isTeamA && !isTeamB) return;
+
+    // Calculate map differential
+    const teamMaps = match.maps.filter(m => 
+      (isTeamA && m.winner === 'teamA') || (isTeamB && m.winner === 'teamB')
+    ).length;
+    const opponentMaps = match.maps.length - teamMaps;
+    mapDifferential += teamMaps - opponentMaps;
+
+    // Calculate round differential
+    match.maps.forEach(map => {
+      if (isTeamA) {
+        roundDifferential += map.teamAScore - map.teamBScore;
+      } else if (isTeamB) {
+        roundDifferential += map.teamBScore - map.teamAScore;
+      }
+    });
+  });
 
   return (
     <div className="dashboard">
@@ -77,11 +111,11 @@ export default function Dashboard({ teamName, region }: DashboardProps) {
               </div>
               <div className="stat-card">
                 <span className="stat-label">Map Differential</span>
-                <span className="stat-value">0</span>
+                <span className="stat-value">{mapDifferential > 0 ? '+' : ''}{mapDifferential}</span>
               </div>
               <div className="stat-card">
                 <span className="stat-label">Round Differential</span>
-                <span className="stat-value">0</span>
+                <span className="stat-value">{roundDifferential > 0 ? '+' : ''}{roundDifferential}</span>
               </div>
               <div className="stat-card">
                 <span className="stat-label">Budget</span>
