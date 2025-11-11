@@ -17,7 +17,7 @@ export default function Dashboard({ teamName, region }: DashboardProps) {
   const { schedule } = useGame();
 
   const wins = schedule.filter(m => m.winner?.name === teamName).length;
-  const losses = schedule.filter(m => m.winner && m.winner.name !== teamName).length;
+  const losses = schedule.filter(m => m.winner && m.winner.name !== teamName && (m.teamA.name === teamName || m.teamB.name === teamName)).length;
 
   return (
     <div className="dashboard">
