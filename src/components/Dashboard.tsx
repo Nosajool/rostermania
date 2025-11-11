@@ -3,6 +3,7 @@ import type { Region } from '../types/types';
 import { useGame } from '../hooks/useGame';
 import RosterView from './RosterView';
 import ScheduleView from './ScheduleView';
+import StandingsView from './StandingsView';
 import './Dashboard.css';
 
 interface DashboardProps {
@@ -104,10 +105,7 @@ export default function Dashboard({ teamName, region }: DashboardProps) {
         )}
 
         {activeTab === 'standings' && (
-          <div className="standings-tab">
-            <h2>League Standings</h2>
-            <p className="coming-soon">Standings view coming soon...</p>
-          </div>
+          <StandingsView teamName={teamName} region={region} />
         )}
       </div>
     </div>
