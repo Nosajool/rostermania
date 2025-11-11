@@ -1,6 +1,18 @@
 // Real VCT 2025 data scraped from VLR.gg and official sources
 
-import type { Region, Role, Map } from '../types/types';
+import type { Region, Role, Map, Agent } from '../types/types';
+
+// All Valorant Agents (27 as of 2025)
+export const AGENTS: Agent[] = [
+  // Duelists
+  'Jett', 'Phoenix', 'Reyna', 'Raze', 'Yoru', 'Neon', 'Iso',
+  // Controllers
+  'Brimstone', 'Viper', 'Omen', 'Astra', 'Harbor', 'Clove',
+  // Initiators
+  'Sova', 'Breach', 'Skye', 'KAY/O', 'Fade', 'Gekko', 'Tejo',
+  // Sentinels
+  'Sage', 'Cypher', 'Killjoy', 'Chamber', 'Deadlock', 'Vyse',
+];
 
 // Competitive Maps (Active in VCT 2025)
 export const MAPS: Map[] = [
@@ -14,7 +26,6 @@ export const MAPS: Map[] = [
   'Pearl',
   'Lotus',
   'Sunset',
-  'Abyss',
 ];
 
 // VCT 2025 Americas Teams (12 teams)

@@ -1,0 +1,211 @@
+.team-selection {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  padding: 2rem;
+  color: white;
+}
+
+.selection-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.selection-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.selection-header h1 {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #ff4655 0%, #ff8a00 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.selection-header p {
+  font-size: 1.2rem;
+  color: #ccc;
+}
+
+/* Region Section */
+.region-section,
+.team-section {
+  margin-bottom: 3rem;
+}
+
+.region-section h2,
+.team-section h2 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.region-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.region-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.region-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 70, 85, 0.5);
+  transform: translateY(-5px);
+}
+
+.region-card.selected {
+  background: rgba(255, 70, 85, 0.2);
+  border-color: #ff4655;
+  box-shadow: 0 0 20px rgba(255, 70, 85, 0.4);
+}
+
+.region-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.region-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: white;
+}
+
+.region-info {
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+/* Team Section */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.team-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+}
+
+.team-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 70, 85, 0.5);
+  transform: translateY(-3px);
+}
+
+.team-card.selected {
+  background: rgba(255, 70, 85, 0.15);
+  border-color: #ff4655;
+  box-shadow: 0 0 15px rgba(255, 70, 85, 0.3);
+}
+
+.team-header {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.team-tag {
+  display: inline-block;
+  background: rgba(255, 70, 85, 0.3);
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.team-header h3 {
+  font-size: 1.3rem;
+  color: white;
+  margin: 0;
+}
+
+.team-roster {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.player-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+}
+
+.player-name {
+  font-weight: 500;
+  color: white;
+}
+
+.player-role {
+  font-size: 0.85rem;
+  color: #ff4655;
+  background: rgba(255, 70, 85, 0.2);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+/* Confirm Section */
+.confirm-section {
+  text-align: center;
+  margin-top: 3rem;
+}
+
+.confirm-button {
+  background: linear-gradient(135deg, #ff4655 0%, #ff8a00 100%);
+  color: white;
+  border: none;
+  padding: 1.25rem 3rem;
+  font-size: 1.25rem;
+  font-weight: bold;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 70, 85, 0.4);
+}
+
+.confirm-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 70, 85, 0.6);
+}
+
+.confirm-button:active {
+  transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .selection-header h1 {
+    font-size: 2rem;
+  }
+
+  .region-grid,
+  .team-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .confirm-button {
+    width: 100%;
+  }
+}

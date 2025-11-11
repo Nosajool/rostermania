@@ -3,8 +3,9 @@ import type { Player, Agent } from '../types/types';
 // Top 10 players from Valorant Champions 2025 based on VLR.gg stats
 // These are manually curated with realistic stats and agent pools
 
-export const ELITE_PLAYERS: Omit<Player, 'id' | 'teamId'>[] = [
+export const ELITE_PLAYERS: Omit<Player, 'teamId'>[] = [
   {
+    id: 'aspas',
     name: 'aspas',
     age: 21,
     region: 'Americas',
@@ -33,6 +34,7 @@ export const ELITE_PLAYERS: Omit<Player, 'id' | 'teamId'>[] = [
   },
   
   {
+    id: 'kaajak',
     name: 'kaajak',
     age: 19,
     region: 'EMEA',
@@ -60,6 +62,7 @@ export const ELITE_PLAYERS: Omit<Player, 'id' | 'teamId'>[] = [
   },
 
   {
+    id: 'alfajer',
     name: 'Alfajer',
     age: 20,
     region: 'EMEA',
@@ -88,6 +91,7 @@ export const ELITE_PLAYERS: Omit<Player, 'id' | 'teamId'>[] = [
   },
 
   {
+    id: 'cortezia',
     name: 'cortezia',
     age: 22,
     region: 'Americas',
@@ -116,6 +120,7 @@ export const ELITE_PLAYERS: Omit<Player, 'id' | 'teamId'>[] = [
   },
 
   {
+    id: 'verno',
     name: 'Verno',
     age: 18,
     region: 'Americas',
@@ -143,6 +148,7 @@ export const ELITE_PLAYERS: Omit<Player, 'id' | 'teamId'>[] = [
   },
 
   {
+    id: 'mako',
     name: 'MaKo',
     age: 23,
     region: 'Pacific',
@@ -171,6 +177,7 @@ export const ELITE_PLAYERS: Omit<Player, 'id' | 'teamId'>[] = [
   },
 
   {
+    id: 'less',
     name: 'Less',
     age: 21,
     region: 'Americas',
@@ -198,6 +205,7 @@ export const ELITE_PLAYERS: Omit<Player, 'id' | 'teamId'>[] = [
   },
 
   {
+    id: 't3xture',
     name: 't3xture',
     age: 21,
     region: 'Pacific',
@@ -225,6 +233,7 @@ export const ELITE_PLAYERS: Omit<Player, 'id' | 'teamId'>[] = [
   },
 
   {
+    id: 'chronicle',
     name: 'Chronicle',
     age: 24,
     region: 'EMEA',
@@ -255,6 +264,7 @@ export const ELITE_PLAYERS: Omit<Player, 'id' | 'teamId'>[] = [
   },
 
   {
+    id: 'johnqt',
     name: 'johnqt',
     age: 23,
     region: 'Americas',
@@ -283,6 +293,6 @@ export const ELITE_PLAYERS: Omit<Player, 'id' | 'teamId'>[] = [
 ];
 
 // Helper to get elite player by name
-export function getElitePlayer(name: string): Omit<Player, 'id' | 'teamId'> | undefined {
+export function getElitePlayer(name: string): Omit<Player, 'teamId'> | undefined {
   return ELITE_PLAYERS.find(p => p.name.toLowerCase() === name.toLowerCase());
 }

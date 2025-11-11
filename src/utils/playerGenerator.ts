@@ -122,8 +122,9 @@ export function generatePlayer(
   region: Region,
   tier: 'S' | 'A' | 'B' | 'C',
   age?: number
-): Omit<Player, 'id' | 'teamId'> {
+): Omit<Player, 'teamId'> {
   return {
+    id: name.toLowerCase().replace(/\s+/g, '-'),
     name,
     age: age || randomInRange(18, 28),
     region,
@@ -156,10 +157,11 @@ export function createCustomPlayer(
   stats: Partial<PlayerStats>,
   agentPool: Partial<Record<Agent, number>>,
   age: number
-): Omit<Player, 'id' | 'teamId'> {
+): Omit<Player, 'teamId'> {
   const defaultStats = generatePlayerStats(role, 'S');
   
   return {
+    id: name.toLowerCase().replace(/\s+/g, '-'),
     name,
     age,
     region,

@@ -4,7 +4,7 @@ export type Region = 'Americas' | 'EMEA' | 'Pacific' | 'China';
 
 export type Role = 'Duelist' | 'Initiator' | 'Controller' | 'Sentinel' | 'Flex';
 
-export type Map = 'Ascent' | 'Split' | 'Haven' | 'Bind' | 'Icebox' | 'Breeze' | 'Fracture' | 'Pearl' | 'Lotus' | 'Sunset' | 'Abyss';
+export type Map = 'Ascent' | 'Split' | 'Haven' | 'Bind' | 'Icebox' | 'Breeze' | 'Fracture' | 'Pearl' | 'Lotus' | 'Sunset';
 
 export type Agent = 
   // Duelists
@@ -162,6 +162,7 @@ export interface MapResult {
 
 export interface Match {
   id: string;
+  week: number;
   teamA: Team;
   teamB: Team;
   maps: MapResult[];
