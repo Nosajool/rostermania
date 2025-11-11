@@ -78,14 +78,14 @@
   margin-bottom: 2rem;
 }
 
-.table-header {
+.standings-table-header {
   display: grid;
   grid-template-columns: 60px 3fr repeat(6, 1fr);
   background: rgba(0, 0, 0, 0.4);
   border-bottom: 2px solid rgba(255, 70, 85, 0.3);
 }
 
-.table-row {
+.standings-table-row {
   display: grid;
   grid-template-columns: 60px 3fr repeat(6, 1fr);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
@@ -93,7 +93,7 @@
   position: relative;
 }
 
-.table-row::before {
+.standings-table-row::before {
   content: '';
   position: absolute;
   left: 0;
@@ -104,34 +104,34 @@
   transition: all 0.2s ease;
 }
 
-.table-row.playoff::before {
+.standings-table-row.playoff::before {
   background: linear-gradient(180deg, #4ade80 0%, #22c55e 100%);
 }
 
-.table-row.eliminated::before {
+.standings-table-row.eliminated::before {
   background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
 }
 
-.table-row:last-child {
+.standings-table-row:last-child {
   border-bottom: none;
 }
 
-.table-row:hover {
+.standings-table-row:hover {
   background: rgba(255, 255, 255, 0.05);
 }
 
-.table-row.player-team {
+.standings-table-row.player-team {
   background: rgba(255, 70, 85, 0.1);
   border: 1px solid rgba(255, 70, 85, 0.3);
 }
 
-.table-row.player-team::before {
+.standings-table-row.player-team::before {
   width: 6px;
   background: linear-gradient(180deg, #ff4655 0%, #ff8a00 100%);
 }
 
-.header-cell,
-.cell {
+.standings-header-cell,
+.standings-cell {
   padding: 1rem;
   display: flex;
   align-items: center;
@@ -145,7 +145,7 @@
   color: #999;
 }
 
-.cell {
+.standings-cell {
   font-size: 0.95rem;
   color: #ccc;
 }
@@ -301,13 +301,13 @@
 
 /* Responsive */
 @media (max-width: 1200px) {
-  .table-header,
-  .table-row {
+  .standings-table-header,
+  .standings-table-row {
     grid-template-columns: 50px 2.5fr repeat(6, 1fr);
   }
   
-  .header-cell,
-  .cell {
+  .standings-header-cell,
+  .standings-cell {
     padding: 0.75rem 0.5rem;
     font-size: 0.85rem;
   }
@@ -318,14 +318,14 @@
     flex-direction: column;
   }
   
-  .table-header,
-  .table-row {
+  .standings-table-header,
+  .standings-table-row {
     grid-template-columns: 40px 2fr 1fr 1fr 1fr;
   }
   
   /* Hide less important columns on mobile */
-  .header-cell:nth-child(n+6),
-  .cell:nth-child(n+6) {
+  .standings-header-cell:nth-child(n+6),
+  .standings-cell:nth-child(n+6) {
     display: none;
   }
   

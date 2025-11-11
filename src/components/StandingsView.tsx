@@ -133,15 +133,15 @@ export default function StandingsView({ teamName }: StandingsViewProps) {
       </div>
 
       <div className="standings-table">
-        <div className="table-header">
-          <div className="header-cell rank-cell">#</div>
-          <div className="header-cell team-cell">Team</div>
-          <div className="header-cell stat-cell">W</div>
-          <div className="header-cell stat-cell">L</div>
-          <div className="header-cell stat-cell">Win%</div>
-          <div className="header-cell stat-cell">Maps</div>
-          <div className="header-cell stat-cell">MD</div>
-          <div className="header-cell stat-cell">RD</div>
+        <div className="standings-table-header">
+          <div className="standings-header-cell rank-cell">#</div>
+          <div className="standings-header-cell team-cell">Team</div>
+          <div className="standings-header-cell stat-cell">W</div>
+          <div className="standings-header-cell stat-cell">L</div>
+          <div className="standings-header-cell stat-cell">Win%</div>
+          <div className="standings-header-cell stat-cell">Maps</div>
+          <div className="standings-header-cell stat-cell">MD</div>
+          <div className="standings-header-cell stat-cell">RD</div>
         </div>
 
         {standings.map(standing => {
@@ -152,33 +152,33 @@ export default function StandingsView({ teamName }: StandingsViewProps) {
           return (
             <div
               key={standing.team.id}
-              className={`table-row ${isPlayerTeam ? 'player-team' : ''} ${isPlayoffTeam ? 'playoff' : ''} ${isEliminated ? 'eliminated' : ''}`}
+              className={`standings-table-row ${isPlayerTeam ? 'player-team' : ''} ${isPlayoffTeam ? 'playoff' : ''} ${isEliminated ? 'eliminated' : ''}`}
             >
-              <div className="cell rank-cell">
+              <div className="standings-cell rank-cell">
                 <span className={`rank-number ${standing.rank <= 3 ? 'top-3' : ''}`}>
                   {standing.rank}
                 </span>
               </div>
-              <div className="cell team-cell">
+              <div className="standings-cell team-cell">
                 <div className="team-info">
                   <span className="team-tag">{standing.team.shortName}</span>
                   <span className="team-name">{standing.team.name}</span>
                   {isPlayerTeam && <span className="you-badge">YOU</span>}
                 </div>
               </div>
-              <div className="cell stat-cell">
+              <div className="standings-cell stat-cell">
                 <span className="stat-value wins">{standing.wins}</span>
               </div>
-              <div className="cell stat-cell">
+              <div className="standings-cell stat-cell">
                 <span className="stat-value losses">{standing.losses}</span>
               </div>
-              <div className="cell stat-cell">
+              <div className="standings-cell stat-cell">
                 <span className="stat-value">{standing.winRate.toFixed(0)}%</span>
               </div>
-              <div className="cell stat-cell">
+              <div className="standings-cell stat-cell">
                 <span className="stat-value">{standing.wins * 2 + standing.losses}</span>
               </div>
-              <div className="cell stat-cell">
+              <div className="standings-cell stat-cell">
                 <span className={`stat-value differential ${standing.mapDifferential > 0 ? 'positive' : standing.mapDifferential < 0 ? 'negative' : ''}`}>
                   {standing.mapDifferential > 0 ? '+' : ''}{standing.mapDifferential}
                 </span>
