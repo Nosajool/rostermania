@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import type { Player, Region, Role } from '../types/types';
+import type { Player, Region, Role, PlayerContract } from '../types/types';
 import { useGame } from '../hooks/useGame';
 import { generateTier2FreeAgents } from '../utils/freeAgentGenerator';
+import { formatSalary, calculateTeamSalary, getRemainingBudget } from '../utils/contractUtils';
+import ContractNegotiation from './ContractNegotiation';
 import './RosterManagement.css';
 
 interface RosterManagementProps {
@@ -18,6 +20,7 @@ export default function RosterManagement({ teamName, onBack }: RosterManagementP
   const [selectedFreeAgent, setSelectedFreeAgent] = useState<Player | null>(null);
   const [filterRole, setFilterRole] = useState<FilterRole>('All');
   const [view, setView] = useState<'current' | 'free-agents'>('current');
+  const [showNegotiation, setShowNegotiation] = useState(false);
 
   if (!playerTeam) return <div>Team not found</div>;
 
@@ -29,15 +32,32 @@ export default function RosterManagement({ teamName, onBack }: RosterManagementP
     ? freeAgents 
     : freeAgents.filter(fa => fa.role === filterRole);
 
-  const handleSignPlayer = (freeAgent: Player) => {
+  const teamSalary = calculateTeamSalary(playerTeam.roster);
+  const remainingBudget = getRemainingBudget(playerTeam.budget, playerTeam.roster);
+
+  const handleSignPlayer = (contract: PlayerContract) => {
+    if (!selectedFreeAgent) return;
+    
     if (playerTeam.roster.length >= 5) {
       alert('Roster is full! Release a player first.');
       return;
     }
     
-    signFreeAgent(freeAgent);
+    const playerWithContract = {
+      ...selectedFreeAgent,
+      contract,
+    };
+    
+    signFreeAgent(playerWithContract);
     setSelectedFreeAgent(null);
-    alert(`${freeAgent.name} has been signed to your roster!`);
+    setShowNegotiation(false);
+    alert(`${selectedFreeAgent.name} has been signed to your roster!`);
+  };
+
+  const handleOpenNegotiation = () => {
+    if (selectedFreeAgent) {
+      setShowNegotiation(true);
+    }
   };
 
   const handleReleasePlayer = (player: Player) => {
@@ -63,7 +83,8 @@ export default function RosterManagement({ teamName, onBack }: RosterManagementP
           <h2>Roster Management</h2>
           <p className="roster-count">
             Current Roster: {playerTeam.roster.length}/5 players • 
-            Budget: ${(playerTeam.budget / 1000000).toFixed(1)}M
+            Salary: {formatSalary(teamSalary)} / {formatSalary(playerTeam.budget)} •
+            Available: {formatSalary(remainingBudget)}
           </p>
         </div>
         {onBack && (
@@ -134,9 +155,9 @@ export default function RosterManagement({ teamName, onBack }: RosterManagementP
                       </span>
                     </div>
                     <div className="quick-stat">
-                      <span className="stat-label">Contract</span>
+                      <span className="stat-label">Salary</span>
                       <span className="stat-value">
-                        {player.contract ? `${player.contract.yearsRemaining}yr` : 'N/A'}
+                        {player.contract ? formatSalary(player.contract.salary) : 'N/A'}
                       </span>
                     </div>
                   </div>
@@ -171,7 +192,7 @@ export default function RosterManagement({ teamName, onBack }: RosterManagementP
                         </span>
                       </div>
                       <div className="quick-stat">
-                        <span className="stat-label">Salary</span>
+                        <span className="stat-label">Asking Salary</span>
                         <span className="stat-value">$200K</span>
                       </div>
                     </div>
@@ -207,9 +228,9 @@ export default function RosterManagement({ teamName, onBack }: RosterManagementP
                     <h2>{selectedFreeAgent.name}</h2>
                     <button 
                       className="sign-button"
-                      onClick={() => handleSignPlayer(selectedFreeAgent)}
+                      onClick={handleOpenNegotiation}
                     >
-                      Sign Player
+                      Negotiate Contract
                     </button>
                   </div>
                   <PlayerDetailsView player={selectedFreeAgent} isFreeAgent />
@@ -223,6 +244,17 @@ export default function RosterManagement({ teamName, onBack }: RosterManagementP
           )}
         </div>
       </div>
+
+      {/* Contract Negotiation Modal */}
+      {showNegotiation && selectedFreeAgent && (
+        <ContractNegotiation
+          player={selectedFreeAgent}
+          currentRoster={playerTeam.roster}
+          teamBudget={playerTeam.budget}
+          onSign={handleSignPlayer}
+          onCancel={() => setShowNegotiation(false)}
+        />
+      )}
     </div>
   );
 }
@@ -253,6 +285,33 @@ function PlayerDetailsView({ player, isFreeAgent = false }: { player: Player; is
           </div>
         )}
       </div>
+
+      {/* Contract Info */}
+      {player.contract && (
+        <div className="contract-info-section">
+          <h3>Contract Details</h3>
+          <div className="contract-info-grid">
+            <div className="contract-info-item">
+              <span className="contract-label">Salary</span>
+              <span className="contract-value">{formatSalary(player.contract.salary)}/yr</span>
+            </div>
+            <div className="contract-info-item">
+              <span className="contract-label">Years Remaining</span>
+              <span className="contract-value">{player.contract.yearsRemaining} years</span>
+            </div>
+            <div className="contract-info-item">
+              <span className="contract-label">Total Value</span>
+              <span className="contract-value">
+                {formatSalary(player.contract.salary * player.contract.yearsRemaining)}
+              </span>
+            </div>
+            <div className="contract-info-item">
+              <span className="contract-label">Buyout Clause</span>
+              <span className="contract-value">{formatSalary(player.contract.buyoutClause)}</span>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="stats-section">
         <h3>Player Attributes</h3>

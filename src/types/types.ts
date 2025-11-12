@@ -31,7 +31,9 @@ export interface PlayerStats {
 export interface PlayerContract {
   salary: number;        // Annual salary
   yearsRemaining: number;
-  buyoutClause?: number; // Optional buyout amount
+  totalYears: number;    // Original contract length
+  buyoutClause: number;  // Buyout amount to release early
+  signedDate?: Date;     // When contract was signed
 }
 
 // Player synergy with another player (bidirectional)
