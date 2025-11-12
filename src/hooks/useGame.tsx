@@ -16,6 +16,8 @@ interface GameContextType extends GameState {
   updateMatchResult: (matchId: string, updatedMatch: Match) => void;
   advanceWeek: () => void;
   resetGame: () => void;
+  signFreeAgent: (player: Player) => void;
+  releasePlayer: (playerId: string) => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -92,6 +94,40 @@ export function GameProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  const signFreeAgent = (player: Player) => {
+    setGameState(prev => {
+      if (!prev.playerTeam) return prev;
+      
+      // Add player to roster
+      const updatedRoster = [...prev.playerTeam.roster, { ...player, teamId: prev.playerTeam!.name }];
+      
+      return {
+        ...prev,
+        playerTeam: {
+          ...prev.playerTeam,
+          roster: updatedRoster,
+        },
+      };
+    });
+  };
+
+  const releasePlayer = (playerId: string) => {
+    setGameState(prev => {
+      if (!prev.playerTeam) return prev;
+      
+      // Remove player from roster
+      const updatedRoster = prev.playerTeam.roster.filter(p => p.id !== playerId);
+      
+      return {
+        ...prev,
+        playerTeam: {
+          ...prev.playerTeam,
+          roster: updatedRoster,
+        },
+      };
+    });
+  };
+
   return (
     <GameContext.Provider value={{
       ...gameState,
@@ -99,6 +135,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
       updateMatchResult,
       advanceWeek,
       resetGame,
+      signFreeAgent,
+      releasePlayer,
     }}>
       {children}
     </GameContext.Provider>

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { Region } from '../types/types';
 import { getCachedTeam } from '../utils/teamUtils';
+import RosterManagement from './RosterManagement';
 import './RosterView.css';
 
 interface RosterViewProps {
@@ -10,6 +11,7 @@ interface RosterViewProps {
 
 export default function RosterView({ teamName, region }: RosterViewProps) {
   const [selectedPlayer, setSelectedPlayer] = useState<string | null>(null);
+  const [showManagement, setShowManagement] = useState(false);
 
   // Get the full team with all player stats
   const team = getCachedTeam(teamName, region);
@@ -19,11 +21,18 @@ export default function RosterView({ teamName, region }: RosterViewProps) {
     ? playersWithStats.find(p => p.id === selectedPlayer)
     : null;
 
+  // If management view is active, show that instead
+  if (showManagement) {
+    return <RosterManagement teamName={teamName} region={region} onBack={() => setShowManagement(false)} />;
+  }
+
   return (
     <div className="roster-view">
       <div className="roster-header">
         <h2>Team Roster</h2>
-        <button className="manage-button">Manage Roster</button>
+        <button className="manage-button" onClick={() => setShowManagement(true)}>
+          Manage Roster
+        </button>
       </div>
 
       <div className="roster-layout">

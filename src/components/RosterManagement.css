@@ -1,0 +1,473 @@
+.roster-management {
+  width: 100%;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.management-header {
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.management-header h2 {
+  font-size: 1.8rem;
+  margin: 0 0 0.5rem 0;
+}
+
+.roster-count {
+  color: #aaa;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.back-button {
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.back-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(-3px);
+}
+
+/* View Toggle */
+.view-toggle {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 0.5rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.toggle-button {
+  flex: 1;
+  background: transparent;
+  color: #aaa;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.toggle-button:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+}
+
+.toggle-button.active {
+  background: linear-gradient(135deg, #ff4655 0%, #ff8a00 100%);
+  color: white;
+}
+
+/* Role Filter */
+.role-filter {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.filter-label {
+  font-weight: 600;
+  color: #aaa;
+  white-space: nowrap;
+}
+
+.role-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.role-button {
+  background: rgba(255, 255, 255, 0.05);
+  color: #ccc;
+  padding: 0.5rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.role-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 70, 85, 0.5);
+}
+
+.role-button.active {
+  background: rgba(255, 70, 85, 0.2);
+  color: #ff4655;
+  border-color: #ff4655;
+}
+
+/* Layout */
+.management-layout {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: 2rem;
+}
+
+/* Player List */
+.player-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: 800px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.player-list h3 {
+  font-size: 1.2rem;
+  color: #ff4655;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.no-agents {
+  color: #666;
+  text-align: center;
+  padding: 2rem;
+  font-style: italic;
+}
+
+.player-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.player-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 70, 85, 0.5);
+  transform: translateX(5px);
+}
+
+.player-card.selected {
+  background: rgba(255, 70, 85, 0.15);
+  border-color: #ff4655;
+  box-shadow: 0 0 20px rgba(255, 70, 85, 0.3);
+}
+
+.player-card.free-agent {
+  border-color: rgba(96, 165, 250, 0.3);
+}
+
+.player-card.free-agent:hover {
+  border-color: rgba(96, 165, 250, 0.6);
+}
+
+.player-card.free-agent.selected {
+  background: rgba(96, 165, 250, 0.15);
+  border-color: #60a5fa;
+  box-shadow: 0 0 20px rgba(96, 165, 250, 0.3);
+}
+
+.player-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.player-basic-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.player-basic-info h4 {
+  font-size: 1.1rem;
+  margin: 0;
+  color: white;
+}
+
+.player-age {
+  font-size: 0.85rem;
+  color: #aaa;
+}
+
+.tier-badge {
+  display: inline-block;
+  background: rgba(96, 165, 250, 0.2);
+  color: #60a5fa;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-top: 0.25rem;
+}
+
+.player-role-badge {
+  background: rgba(255, 70, 85, 0.3);
+  color: #ff4655;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid rgba(255, 70, 85, 0.5);
+}
+
+.player-quick-stats {
+  display: flex;
+  gap: 1rem;
+}
+
+.quick-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.quick-stat .stat-label {
+  font-size: 0.75rem;
+  color: #aaa;
+  text-transform: uppercase;
+}
+
+.quick-stat .stat-value {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #ff4655;
+}
+
+/* Player Details Panel */
+.player-details-panel {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 2rem;
+  min-height: 600px;
+}
+
+.details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid rgba(255, 70, 85, 0.3);
+}
+
+.details-header h2 {
+  font-size: 2rem;
+  margin: 0;
+  color: white;
+}
+
+.release-button,
+.sign-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.release-button {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.5);
+}
+
+.release-button:hover {
+  background: rgba(239, 68, 68, 0.3);
+  transform: translateY(-2px);
+}
+
+.sign-button {
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(74, 222, 128, 0.4);
+}
+
+.sign-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(74, 222, 128, 0.6);
+}
+
+.no-selection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #666;
+  font-size: 1.2rem;
+}
+
+/* Player Details Content */
+.player-details-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.player-meta-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+}
+
+.meta-item {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 1rem;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.meta-label {
+  font-size: 0.85rem;
+  color: #aaa;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.meta-value {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: white;
+}
+
+.meta-value.rating {
+  color: #ff4655;
+  font-size: 1.8rem;
+}
+
+.stats-section h3,
+.agent-pool-section h3 {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.stats-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.stat-row {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 0.75rem;
+  border-radius: 8px;
+}
+
+.stat-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.stat-name {
+  font-weight: 600;
+  color: white;
+  text-transform: capitalize;
+}
+
+.stat-number {
+  font-weight: bold;
+  color: #ff4655;
+}
+
+.stat-bar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.stat-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.agent-pool-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.agent-chip {
+  background: rgba(96, 165, 250, 0.2);
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.agent-name {
+  color: #60a5fa;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.agent-prof {
+  background: rgba(96, 165, 250, 0.3);
+  color: white;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .management-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .player-list {
+    max-height: 400px;
+  }
+}
+
+@media (max-width: 768px) {
+  .player-details-panel {
+    padding: 1rem;
+  }
+
+  .details-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .release-button,
+  .sign-button {
+    width: 100%;
+  }
+
+  .role-filter {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
