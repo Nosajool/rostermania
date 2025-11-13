@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import type { Match, Team, Region } from '../types/types';
+import type { Match, Team, Region, Player } from '../types/types';
 import { generateSchedule, getCachedTeam } from '../utils/teamUtils';
+import { initializeDevelopment, applyTraining, type TrainingFocus } from '../utils/playerDevelopment';
 
 interface GameState {
   playerTeam: Team | null;
@@ -20,6 +21,7 @@ interface GameContextType extends GameState {
   releasePlayer: (playerId: string) => void;
   moveToReserve: (playerId: string) => void;
   moveToActive: (playerId: string) => void;
+  trainPlayer: (playerId: string, focus: TrainingFocus) => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -58,10 +60,21 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const { teams, schedule } = generateSchedule(region);
     const playerTeam = getCachedTeam(teamName, region);
 
+    // Initialize development attributes for all players
+    const teamsWithDev = teams.map(team => ({
+      ...team,
+      roster: team.roster.map(player => initializeDevelopment(player))
+    }));
+
+    const playerTeamWithDev = {
+      ...playerTeam,
+      roster: playerTeam.roster.map(player => initializeDevelopment(player))
+    };
+
     setGameState({
-      playerTeam,
+      playerTeam: playerTeamWithDev,
       region,
-      allTeams: teams,
+      allTeams: teamsWithDev,
       schedule,
       currentWeek: 1,
       currentStage: 'Stage 1',
@@ -157,12 +170,27 @@ export function GameProvider({ children }: { children: ReactNode }) {
       // Remove player from roster
       const updatedRoster = prev.playerTeam.roster.filter(p => p.id !== playerId);
       
+      const updatedPlayerTeam = {
+        ...prev.playerTeam,
+        roster: updatedRoster,
+      };
+      
+      // Update the team in allTeams and schedule
+      const updatedAllTeams = prev.allTeams.map(t => 
+        t.name === prev.playerTeam!.name ? updatedPlayerTeam : t
+      );
+      
+      const updatedSchedule = prev.schedule.map(match => ({
+        ...match,
+        teamA: match.teamA.name === prev.playerTeam!.name ? updatedPlayerTeam : match.teamA,
+        teamB: match.teamB.name === prev.playerTeam!.name ? updatedPlayerTeam : match.teamB,
+      }));
+      
       return {
         ...prev,
-        playerTeam: {
-          ...prev.playerTeam,
-          roster: updatedRoster,
-        },
+        playerTeam: updatedPlayerTeam,
+        allTeams: updatedAllTeams,
+        schedule: updatedSchedule,
       };
     });
   };
@@ -191,12 +219,27 @@ export function GameProvider({ children }: { children: ReactNode }) {
         p.id === playerId ? { ...p, status: 'reserve' as const } : p
       );
       
+      const updatedPlayerTeam = {
+        ...prev.playerTeam,
+        roster: updatedRoster,
+      };
+      
+      // Update the team in allTeams and schedule
+      const updatedAllTeams = prev.allTeams.map(t => 
+        t.name === prev.playerTeam!.name ? updatedPlayerTeam : t
+      );
+      
+      const updatedSchedule = prev.schedule.map(match => ({
+        ...match,
+        teamA: match.teamA.name === prev.playerTeam!.name ? updatedPlayerTeam : match.teamA,
+        teamB: match.teamB.name === prev.playerTeam!.name ? updatedPlayerTeam : match.teamB,
+      }));
+      
       return {
         ...prev,
-        playerTeam: {
-          ...prev.playerTeam,
-          roster: updatedRoster,
-        },
+        playerTeam: updatedPlayerTeam,
+        allTeams: updatedAllTeams,
+        schedule: updatedSchedule,
       };
     });
   };
@@ -224,12 +267,63 @@ export function GameProvider({ children }: { children: ReactNode }) {
         p.id === playerId ? { ...p, status: 'active' as const } : p
       );
       
+      const updatedPlayerTeam = {
+        ...prev.playerTeam,
+        roster: updatedRoster,
+      };
+      
+      // Update the team in allTeams and schedule
+      const updatedAllTeams = prev.allTeams.map(t => 
+        t.name === prev.playerTeam!.name ? updatedPlayerTeam : t
+      );
+      
+      const updatedSchedule = prev.schedule.map(match => ({
+        ...match,
+        teamA: match.teamA.name === prev.playerTeam!.name ? updatedPlayerTeam : match.teamA,
+        teamB: match.teamB.name === prev.playerTeam!.name ? updatedPlayerTeam : match.teamB,
+      }));
+      
       return {
         ...prev,
-        playerTeam: {
-          ...prev.playerTeam,
-          roster: updatedRoster,
-        },
+        playerTeam: updatedPlayerTeam,
+        allTeams: updatedAllTeams,
+        schedule: updatedSchedule,
+      };
+    });
+  };
+
+  const trainPlayer = (playerId: string, focus: TrainingFocus) => {
+    setGameState(prev => {
+      if (!prev.playerTeam) return prev;
+
+      const updatedRoster = prev.playerTeam.roster.map(player => {
+        if (player.id === playerId) {
+          return applyTraining(player, focus);
+        }
+        return player;
+      });
+
+      const updatedPlayerTeam = {
+        ...prev.playerTeam,
+        roster: updatedRoster,
+      };
+
+      // Update the team in allTeams and schedule
+      const updatedAllTeams = prev.allTeams.map(t => 
+        t.name === prev.playerTeam!.name ? updatedPlayerTeam : t
+      );
+
+      const updatedSchedule = prev.schedule.map(match => ({
+        ...match,
+        teamA: match.teamA.name === prev.playerTeam!.name ? updatedPlayerTeam : match.teamA,
+        teamB: match.teamB.name === prev.playerTeam!.name ? updatedPlayerTeam : match.teamB,
+      }));
+
+      return {
+        ...prev,
+        playerTeam: updatedPlayerTeam,
+        allTeams: updatedAllTeams,
+        schedule: updatedSchedule,
       };
     });
   };
@@ -245,6 +339,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       releasePlayer,
       moveToReserve,
       moveToActive,
+      trainPlayer,
     }}>
       {children}
     </GameContext.Provider>

@@ -3,6 +3,7 @@ import type { Region } from '../types/types';
 import RosterView from './RosterView';
 import ScheduleView from './ScheduleView';
 import StandingsView from './StandingsView';
+import TrainingCenter from './TrainingCenter';
 import { useGame } from '../hooks/useGame';
 import './Dashboard.css';
 
@@ -11,7 +12,7 @@ interface DashboardProps {
   region: Region;
 }
 
-type DashboardTab = 'overview' | 'roster' | 'schedule' | 'standings';
+type DashboardTab = 'overview' | 'roster' | 'schedule' | 'standings' | 'training';
 
 export default function Dashboard({ teamName, region }: DashboardProps) {
   const [activeTab, setActiveTab] = useState<DashboardTab>('roster');
@@ -97,6 +98,12 @@ export default function Dashboard({ teamName, region }: DashboardProps) {
         >
           Standings
         </button>
+        <button
+          className={`tab-button ${activeTab === 'training' ? 'active' : ''}`}
+          onClick={() => setActiveTab('training')}
+        >
+          Training
+        </button>
       </div>
 
       {/* Content Area */}
@@ -140,6 +147,10 @@ export default function Dashboard({ teamName, region }: DashboardProps) {
 
         {activeTab === 'standings' && (
           <StandingsView teamName={teamName} region={region} />
+        )}
+
+        {activeTab === 'training' && (
+          <TrainingCenter />
         )}
       </div>
     </div>
