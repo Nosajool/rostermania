@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { Region } from '../types/types';
-import { getCachedTeam } from '../utils/teamUtils';
+import { useGame } from '../hooks/useGame';
 import RosterManagement from './RosterManagement';
 import './RosterView.css';
 
@@ -12,10 +12,12 @@ interface RosterViewProps {
 export default function RosterView({ teamName, region }: RosterViewProps) {
   const [selectedPlayer, setSelectedPlayer] = useState<string | null>(null);
   const [showManagement, setShowManagement] = useState(false);
+  const { playerTeam } = useGame();
 
-  // Get the full team with all player stats
-  const team = getCachedTeam(teamName, region);
-  const playersWithStats = team.roster;
+  if (!playerTeam) return <div>Team not found</div>;
+
+  // Use active players only for display
+  const playersWithStats = playerTeam.roster.filter(p => p.status !== 'reserve');
 
   const selectedPlayerData = selectedPlayer 
     ? playersWithStats.find(p => p.id === selectedPlayer)

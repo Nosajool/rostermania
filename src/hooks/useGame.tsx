@@ -117,12 +117,27 @@ export function GameProvider({ children }: { children: ReactNode }) {
         status 
       }];
       
+      const updatedPlayerTeam = {
+        ...prev.playerTeam,
+        roster: updatedRoster,
+      };
+      
+      // Update the team in allTeams and schedule
+      const updatedAllTeams = prev.allTeams.map(t => 
+        t.name === prev.playerTeam!.name ? updatedPlayerTeam : t
+      );
+      
+      const updatedSchedule = prev.schedule.map(match => ({
+        ...match,
+        teamA: match.teamA.name === prev.playerTeam!.name ? updatedPlayerTeam : match.teamA,
+        teamB: match.teamB.name === prev.playerTeam!.name ? updatedPlayerTeam : match.teamB,
+      }));
+      
       return {
         ...prev,
-        playerTeam: {
-          ...prev.playerTeam,
-          roster: updatedRoster,
-        },
+        playerTeam: updatedPlayerTeam,
+        allTeams: updatedAllTeams,
+        schedule: updatedSchedule,
       };
     });
   };

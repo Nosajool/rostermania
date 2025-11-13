@@ -11,18 +11,32 @@ interface ScheduleViewProps {
 }
 
 export default function ScheduleView({ teamName }: ScheduleViewProps) {
-  const { schedule, currentWeek, updateMatchResult, advanceWeek } = useGame();
+  const { schedule, currentWeek, updateMatchResult, advanceWeek, playerTeam, allTeams } = useGame();
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
   const [selectedMap, setSelectedMap] = useState<MapResult | null>(null);
   const [isSimulating, setIsSimulating] = useState(false);
+
+  if (!playerTeam) return <div>Loading...</div>;
 
   const handleSimulateMatch = (matchId: string) => {
     const match = schedule.find(m => m.id === matchId);
     if (!match || match.winner) return;
 
+    // Get the current teams with updated rosters
+    let teamA = match.teamA;
+    let teamB = match.teamB;
+
+    // If this is the player's team, use the current roster from game state
+    if (teamA.name === playerTeam.name) {
+      teamA = playerTeam;
+    }
+    if (teamB.name === playerTeam.name) {
+      teamB = playerTeam;
+    }
+
     // Use a static map pool for simulation (could be made dynamic)
     const mapPool: [Map, Map, Map] = ['Ascent', 'Bind', 'Haven'];
-    const results = simulateBestOf3(match.teamA, match.teamB, mapPool);
+    const results = simulateBestOf3(teamA, teamB, mapPool);
 
     const teamAWins = results.filter(r => r.winner === 'teamA').length;
     const teamBWins = results.filter(r => r.winner === 'teamB').length;
