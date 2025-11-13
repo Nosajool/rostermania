@@ -18,6 +18,8 @@ interface GameContextType extends GameState {
   resetGame: () => void;
   signFreeAgent: (player: Player) => void;
   releasePlayer: (playerId: string) => void;
+  moveToReserve: (playerId: string) => void;
+  moveToActive: (playerId: string) => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -98,8 +100,22 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setGameState(prev => {
       if (!prev.playerTeam) return prev;
       
+      // Check roster limit (5 active + 3 reserve = 8 total)
+      if (prev.playerTeam.roster.length >= 8) {
+        alert('Roster is full (8 players maximum)!');
+        return prev;
+      }
+      
+      // New signings default to reserve unless roster has less than 5 active players
+      const activePlayers = prev.playerTeam.roster.filter(p => p.status !== 'reserve').length;
+      const status = activePlayers < 5 ? 'active' : 'reserve';
+      
       // Add player to roster
-      const updatedRoster = [...prev.playerTeam.roster, { ...player, teamId: prev.playerTeam!.name }];
+      const updatedRoster = [...prev.playerTeam.roster, { 
+        ...player, 
+        teamId: prev.playerTeam!.name,
+        status 
+      }];
       
       return {
         ...prev,
@@ -115,8 +131,83 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setGameState(prev => {
       if (!prev.playerTeam) return prev;
       
+      const player = prev.playerTeam.roster.find(p => p.id === playerId);
+      
+      // Can only release reserve players
+      if (player?.status !== 'reserve') {
+        alert('You can only release reserve players. Move them to reserve first.');
+        return prev;
+      }
+      
       // Remove player from roster
       const updatedRoster = prev.playerTeam.roster.filter(p => p.id !== playerId);
+      
+      return {
+        ...prev,
+        playerTeam: {
+          ...prev.playerTeam,
+          roster: updatedRoster,
+        },
+      };
+    });
+  };
+
+  const moveToReserve = (playerId: string) => {
+    setGameState(prev => {
+      if (!prev.playerTeam) return prev;
+      
+      const player = prev.playerTeam.roster.find(p => p.id === playerId);
+      
+      // Check if player is already reserve
+      if (player?.status === 'reserve') {
+        return prev;
+      }
+      
+      const activePlayers = prev.playerTeam.roster.filter(p => p.status !== 'reserve');
+      const reservePlayers = prev.playerTeam.roster.filter(p => p.status === 'reserve');
+      
+      // Check if reserve is full
+      if (reservePlayers.length >= 3) {
+        alert('Reserve is full (3 players maximum)! Move a reserve player to active first.');
+        return prev;
+      }
+      
+      const updatedRoster = prev.playerTeam.roster.map(p =>
+        p.id === playerId ? { ...p, status: 'reserve' as const } : p
+      );
+      
+      return {
+        ...prev,
+        playerTeam: {
+          ...prev.playerTeam,
+          roster: updatedRoster,
+        },
+      };
+    });
+  };
+
+  const moveToActive = (playerId: string) => {
+    setGameState(prev => {
+      if (!prev.playerTeam) return prev;
+      
+      const player = prev.playerTeam.roster.find(p => p.id === playerId);
+      
+      // Check if player is already active
+      if (player?.status !== 'reserve') {
+        return prev;
+      }
+      
+      const activePlayers = prev.playerTeam.roster.filter(p => p.status !== 'reserve');
+      
+      // Check if active roster is full
+      if (activePlayers.length >= 5) {
+        alert('Active roster is full (5 players maximum)! Move a player to reserve first.');
+        return prev;
+      }
+      
+      const updatedRoster = prev.playerTeam.roster.map(p =>
+        p.id === playerId ? { ...p, status: 'active' as const } : p
+      );
       
       return {
         ...prev,
@@ -137,6 +228,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
       resetGame,
       signFreeAgent,
       releasePlayer,
+      moveToReserve,
+      moveToActive,
     }}>
       {children}
     </GameContext.Provider>

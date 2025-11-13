@@ -144,6 +144,20 @@
   letter-spacing: 1px;
 }
 
+.reserve-header {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.no-reserves {
+  color: #666;
+  text-align: center;
+  padding: 1rem;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
 .no-agents {
   color: #666;
   text-align: center;
@@ -172,8 +186,33 @@
   box-shadow: 0 0 20px rgba(255, 70, 85, 0.3);
 }
 
-.player-card.free-agent {
-  border-color: rgba(96, 165, 250, 0.3);
+.player-card.reserve {
+  border-color: rgba(251, 191, 36, 0.3);
+  opacity: 0.85;
+}
+
+.player-card.reserve:hover {
+  border-color: rgba(251, 191, 36, 0.6);
+  opacity: 1;
+}
+
+.player-card.reserve.selected {
+  background: rgba(251, 191, 36, 0.15);
+  border-color: #fbbf24;
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+  opacity: 1;
+}
+
+.reserve-badge {
+  display: inline-block;
+  background: rgba(251, 191, 36, 0.2);
+  color: #fbbf24;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-top: 0.25rem;
+  letter-spacing: 0.5px;
 }
 
 .player-card.free-agent:hover {
@@ -270,6 +309,8 @@
   margin-bottom: 2rem;
   padding-bottom: 1rem;
   border-bottom: 2px solid rgba(255, 70, 85, 0.3);
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .details-header h2 {
@@ -278,8 +319,16 @@
   color: white;
 }
 
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
 .release-button,
-.sign-button {
+.sign-button,
+.reserve-button,
+.activate-button {
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
   border: none;
@@ -287,6 +336,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
+  white-space: nowrap;
 }
 
 .release-button {
@@ -300,15 +350,26 @@
   transform: translateY(-2px);
 }
 
-.sign-button {
-  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
-  color: white;
-  box-shadow: 0 4px 15px rgba(74, 222, 128, 0.4);
+.reserve-button {
+  background: rgba(251, 191, 36, 0.2);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.5);
 }
 
-.sign-button:hover {
+.reserve-button:hover {
+  background: rgba(251, 191, 36, 0.3);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(74, 222, 128, 0.6);
+}
+
+.activate-button {
+  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(96, 165, 250, 0.4);
+}
+
+.activate-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(96, 165, 250, 0.6);
 }
 
 .no-selection {

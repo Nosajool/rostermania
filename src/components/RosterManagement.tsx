@@ -15,7 +15,7 @@ interface RosterManagementProps {
 type FilterRole = Role | 'All';
 
 export default function RosterManagement({ teamName, onBack }: RosterManagementProps) {
-  const { playerTeam, signFreeAgent, releasePlayer } = useGame();
+  const { playerTeam, signFreeAgent, releasePlayer, moveToReserve, moveToActive } = useGame();
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
   const [selectedFreeAgent, setSelectedFreeAgent] = useState<Player | null>(null);
   const [filterRole, setFilterRole] = useState<FilterRole>('All');
@@ -23,6 +23,10 @@ export default function RosterManagement({ teamName, onBack }: RosterManagementP
   const [showNegotiation, setShowNegotiation] = useState(false);
 
   if (!playerTeam) return <div>Team not found</div>;
+
+  // Separate active and reserve players
+  const activePlayers = playerTeam.roster.filter(p => p.status !== 'reserve');
+  const reservePlayers = playerTeam.roster.filter(p => p.status === 'reserve');
 
   // Generate free agents (this would be cached in a real implementation)
   const freeAgents = generateTier2FreeAgents(playerTeam.region);
@@ -38,8 +42,8 @@ export default function RosterManagement({ teamName, onBack }: RosterManagementP
   const handleSignPlayer = (contract: PlayerContract) => {
     if (!selectedFreeAgent) return;
     
-    if (playerTeam.roster.length >= 5) {
-      alert('Roster is full! Release a player first.');
+    if (playerTeam.roster.length >= 8) {
+      alert('Roster is full (8 players maximum)! Release a player first.');
       return;
     }
     
@@ -52,6 +56,30 @@ export default function RosterManagement({ teamName, onBack }: RosterManagementP
     setSelectedFreeAgent(null);
     setShowNegotiation(false);
     alert(`${selectedFreeAgent.name} has been signed to your roster!`);
+  };
+
+  const handleMoveToReserve = (player: Player) => {
+    const reservePlayers = playerTeam.roster.filter(p => p.status === 'reserve');
+    
+    if (reservePlayers.length >= 3) {
+      alert('Reserve is full! You need to move a reserve player to active or release them first.');
+      return;
+    }
+    
+    moveToReserve(player.id);
+    setSelectedPlayer(null);
+  };
+
+  const handleMoveToActive = (player: Player) => {
+    const activePlayers = playerTeam.roster.filter(p => p.status !== 'reserve');
+    
+    if (activePlayers.length >= 5) {
+      alert('Active roster is full! You need to move a player to reserve first.');
+      return;
+    }
+    
+    moveToActive(player.id);
+    setSelectedPlayer(null);
   };
 
   const handleOpenNegotiation = () => {
@@ -82,7 +110,7 @@ export default function RosterManagement({ teamName, onBack }: RosterManagementP
         <div>
           <h2>Roster Management</h2>
           <p className="roster-count">
-            Current Roster: {playerTeam.roster.length}/5 players • 
+            Active: {activePlayers.length}/5 • Reserve: {reservePlayers.length}/3 •
             Salary: {formatSalary(teamSalary)} / {formatSalary(playerTeam.budget)} •
             Available: {formatSalary(remainingBudget)}
           </p>
@@ -133,8 +161,8 @@ export default function RosterManagement({ teamName, onBack }: RosterManagementP
         <div className="player-list">
           {view === 'current' ? (
             <>
-              <h3>Your Roster</h3>
-              {playerTeam.roster.map(player => (
+              <h3>Active Roster ({activePlayers.length}/5)</h3>
+              {activePlayers.map(player => (
                 <div
                   key={player.id}
                   className={`player-card ${selectedPlayer?.id === player.id ? 'selected' : ''}`}
@@ -163,6 +191,42 @@ export default function RosterManagement({ teamName, onBack }: RosterManagementP
                   </div>
                 </div>
               ))}
+
+              <h3 className="reserve-header">Reserve ({reservePlayers.length}/3)</h3>
+              {reservePlayers.length === 0 ? (
+                <p className="no-reserves">No reserve players</p>
+              ) : (
+                reservePlayers.map(player => (
+                  <div
+                    key={player.id}
+                    className={`player-card reserve ${selectedPlayer?.id === player.id ? 'selected' : ''}`}
+                    onClick={() => setSelectedPlayer(player)}
+                  >
+                    <div className="player-card-header">
+                      <div className="player-basic-info">
+                        <h4>{player.name}</h4>
+                        <span className="player-age">Age: {player.age}</span>
+                        <span className="reserve-badge">RESERVE</span>
+                      </div>
+                      <span className="player-role-badge">{player.role}</span>
+                    </div>
+                    <div className="player-quick-stats">
+                      <div className="quick-stat">
+                        <span className="stat-label">Overall</span>
+                        <span className="stat-value">
+                          {Math.round(Object.values(player.stats).reduce((a, b) => a + b, 0) / 9)}
+                        </span>
+                      </div>
+                      <div className="quick-stat">
+                        <span className="stat-label">Salary</span>
+                        <span className="stat-value">
+                          {player.contract ? formatSalary(player.contract.salary) : 'N/A'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
             </>
           ) : (
             <>
@@ -211,12 +275,31 @@ export default function RosterManagement({ teamName, onBack }: RosterManagementP
                 <>
                   <div className="details-header">
                     <h2>{selectedPlayer.name}</h2>
-                    <button 
-                      className="release-button"
-                      onClick={() => handleReleasePlayer(selectedPlayer)}
-                    >
-                      Release Player
-                    </button>
+                    <div className="action-buttons">
+                      {selectedPlayer.status !== 'reserve' ? (
+                        <button 
+                          className="reserve-button"
+                          onClick={() => handleMoveToReserve(selectedPlayer)}
+                        >
+                          Move to Reserve
+                        </button>
+                      ) : (
+                        <>
+                          <button 
+                            className="activate-button"
+                            onClick={() => handleMoveToActive(selectedPlayer)}
+                          >
+                            Move to Active
+                          </button>
+                          <button 
+                            className="release-button"
+                            onClick={() => handleReleasePlayer(selectedPlayer)}
+                          >
+                            Release Player
+                          </button>
+                        </>
+                      )}
+                    </div>
                   </div>
                   <PlayerDetailsView player={selectedPlayer} />
                 </>

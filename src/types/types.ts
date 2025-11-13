@@ -42,6 +42,8 @@ export interface PlayerSynergy {
   value: number;         // -30 to +30 (negative = anti-synergy, positive = synergy)
 }
 
+export type PlayerStatus = 'active' | 'reserve';
+
 export interface Player {
   id: string;
   name: string;
@@ -52,6 +54,7 @@ export interface Player {
   stats: PlayerStats;
   contract?: PlayerContract;
   teamId?: string;
+  status?: PlayerStatus;  // Active roster or reserve
   
   // Agent proficiency: 0-100 for each agent they can play
   agentPool: Partial<Record<Agent, number>>;

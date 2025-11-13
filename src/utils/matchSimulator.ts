@@ -313,11 +313,19 @@ export function simulateBestOf3(
   let teamAWins = 0;
   let teamBWins = 0;
   
+  // Use only active players
+  const teamARoster = teamA.roster.filter(p => p.status !== 'reserve').slice(0, 5);
+  const teamBRoster = teamB.roster.filter(p => p.status !== 'reserve').slice(0, 5);
+  
+  // Create temporary teams with active rosters
+  const activeTeamA = { ...teamA, roster: teamARoster };
+  const activeTeamB = { ...teamB, roster: teamBRoster };
+  
   for (let i = 0; i < 3; i++) {
     // Stop if already won (BO3)
     if (teamAWins === 2 || teamBWins === 2) break;
     
-    const mapResult = simulateMap(teamA, teamB, maps[i]);
+    const mapResult = simulateMap(activeTeamA, activeTeamB, maps[i]);
     results.push(mapResult);
     
     if (mapResult.winner === 'teamA') {

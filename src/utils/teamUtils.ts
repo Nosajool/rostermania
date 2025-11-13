@@ -1,4 +1,4 @@
-import type { Team, Region, Player, Match } from '../types/types';
+import type { Team, Region, Player } from '../types/types';
 import { getTeamsByRegion } from '../data/gameData';
 import { ELITE_PLAYERS } from '../utils/elitePlayers';
 import { generatePlayer, getTeamTier } from './playerGenerator';
@@ -14,12 +14,16 @@ export function createFullTeam(teamName: string, region: Region): Team {
   
   // Generate full player data
   const tier = getTeamTier(teamName);
-  const fullRoster: Player[] = basicTeam.roster.map(basicPlayer => {
+  const fullRoster: Player[] = basicTeam.roster.map((basicPlayer, index) => {
     // Check if this is an elite player
     const elitePlayer = ELITE_PLAYERS.find(p => p.name === basicPlayer.name);
     
     if (elitePlayer) {
-      return { ...elitePlayer, teamId: basicTeam.name };
+      return { 
+        ...elitePlayer, 
+        teamId: basicTeam.name,
+        status: index < 5 ? 'active' : 'reserve' // First 5 are active
+      };
     }
     
     // Generate stats for non-elite players
@@ -30,7 +34,11 @@ export function createFullTeam(teamName: string, region: Region): Team {
       tier
     );
     
-    return { ...generatedPlayer, teamId: basicTeam.name };
+    return { 
+      ...generatedPlayer, 
+      teamId: basicTeam.name,
+      status: index < 5 ? 'active' : 'reserve' // First 5 are active
+    };
   });
   
   return {
@@ -91,7 +99,7 @@ export function generateSchedule(region: Region): { teams: Team[], schedule: Mat
         week: 0, // Assigned later
         teamA: teams[i],
         teamB: teams[j],
-        mapResults: [],
+        maps: [],
         stage: 'Stage 1',
       };
       schedule.push(match);
@@ -104,8 +112,8 @@ export function generateSchedule(region: Region): { teams: Team[], schedule: Mat
     [schedule[i], schedule[j]] = [schedule[j], schedule[i]];
   }
   
-  // Assign weeks
-  const matchesPerWeek = Math.floor(teams.length / 2);
+  // Assign weeks (assuming ~6 matches per week for 12 teams)
+  const matchesPerWeek = 6;
   schedule.forEach((match, index) => {
     match.week = Math.floor(index / matchesPerWeek) + 1;
   });
