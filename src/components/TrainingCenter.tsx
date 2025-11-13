@@ -3,20 +3,60 @@ import type { Player } from '../types/types';
 import { useGame } from '../hooks/useGame';
 import { type TrainingFocus, applyTraining } from '../utils/playerDevelopment';
 import { calculateOverallRating } from '../utils/contractUtils';
+import TrainingResultModal from './TrainingResultModal';
 import './TrainingCenter.css';
 
 export default function TrainingCenter() {
   const { playerTeam, trainPlayer } = useGame();
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
   const [selectedFocus, setSelectedFocus] = useState<TrainingFocus>('balanced');
+  const [showResult, setShowResult] = useState(false);
+  const [playerBefore, setPlayerBefore] = useState<Player | null>(null);
+  const [playerAfter, setPlayerAfter] = useState<Player | null>(null);
 
   if (!playerTeam) return <div>Loading...</div>;
 
   const handleTrain = () => {
     if (!selectedPlayer) return;
     
+    // Store before state
+    setPlayerBefore({ ...selectedPlayer });
+    
+    // Apply training locally to show preview
+    const trainedPlayer = applyTraining(selectedPlayer, selectedFocus);
+    setPlayerAfter(trainedPlayer);
+    
+    // Update in game state
     trainPlayer(selectedPlayer.id, selectedFocus);
-    alert(`${selectedPlayer.name} has completed ${selectedFocus} training!`);
+    
+    // Show result modal
+    setShowResult(true);
+  };
+
+  const handleCloseResult = () => {
+    setShowResult(false);
+    setPlayerBefore(null);
+    setPlayerAfter(null);
+    
+    // Refresh selected player to show updated stats
+    if (selectedPlayer) {
+      const updatedPlayer = playerTeam.roster.find(p => p.id === selectedPlayer.id);
+      if (updatedPlayer) {
+        setSelectedPlayer(updatedPlayer);
+      }
+    }
+  };
+
+  const getFocusLabel = (focus: TrainingFocus): string => {
+    const labels: Record<TrainingFocus, string> = {
+      'aim': '🎯 Aim Training',
+      'strategy': '🧠 Strategy',
+      'teamwork': '🤝 Teamwork',
+      'mentality': '💪 Mental Training',
+      'agents': '🎮 Agent Practice',
+      'balanced': '⚖️ Balanced Training',
+    };
+    return labels[focus];
   };
 
   const trainingOptions: { focus: TrainingFocus; label: string; description: string; stats: string }[] = [
@@ -179,6 +219,16 @@ export default function TrainingCenter() {
           )}
         </div>
       </div>
+
+      {/* Training Result Modal */}
+      {showResult && playerBefore && playerAfter && (
+        <TrainingResultModal
+          playerBefore={playerBefore}
+          playerAfter={playerAfter}
+          trainingFocus={getFocusLabel(selectedFocus)}
+          onClose={handleCloseResult}
+        />
+      )}
     </div>
   );
 }
