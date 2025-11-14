@@ -34,7 +34,7 @@ export default function TeamSelection({ onTeamSelected }: TeamSelectionProps) {
     <div className="team-selection">
       <div className="selection-container">
         <header className="selection-header">
-          <h1>Valorant Champions Tour Manager</h1>
+          <h1>Rostermania</h1>
           <p>Choose your region and team to begin your journey</p>
         </header>
 
