@@ -16,7 +16,7 @@ import {
   getObjectiveDescription,
 } from '../utils/scrimSimulator';
 import { MAPS, AGENTS } from '../data/gameData';
-import './ScrimCenter.css';
+import styles from './ScrimCenter.module.css';
 
 type ScrimStep = 'select_map' | 'select_opponent' | 'select_composition' | 'select_objective' | 'confirm';
 
@@ -131,76 +131,76 @@ export default function ScrimCenter() {
 
   if (showResults && lastResult) {
     return (
-      <div className="scrim-center">
-        <div className="scrim-header">
+      <div className={styles['scrim-center']}>
+        <div className={styles['scrim-header']}>
           <h2>Scrim Results</h2>
-          <div className="scrims-remaining">
+          <div className={styles['scrims-remaining']}>
             {scrimsThisWeek} / {MAX_SCRIMS_PER_WEEK} Scrims Used This Week
           </div>
         </div>
 
-        <div className="scrim-results">
-          <div className="result-header">
+        <div className={styles['scrim-results']}>
+          <div className={styles['result-header']}>
             <h3>Practice Session Complete</h3>
-            <div className="quality-rating">
-              Quality Rating: <span className={`rating ${getQualityClass(lastResult.qualityRating)}`}>
+            <div className={styles['quality-rating']}>
+              Quality Rating: <span className={`${styles.rating} ${styles[getQualityClass(lastResult.qualityRating)]}`}>
                 {lastResult.qualityRating}/100
               </span>
             </div>
           </div>
 
-          <div className="result-feedback">
+          <div className={styles['result-feedback']}>
             <p>{lastResult.feedback}</p>
           </div>
 
-          <div className="result-section">
+          <div className={styles['result-section']}>
             <h4>Team Improvements</h4>
-            <div className="improvement-grid">
-              <div className="improvement-card">
-                <span className="improvement-label">Map Proficiency ({selectedMap})</span>
-                <span className="improvement-value">+{lastResult.teamMapProficiency}</span>
+            <div className={styles['improvement-grid']}>
+              <div className={styles['improvement-card']}>
+                <span className={styles['improvement-label']}>Map Proficiency ({selectedMap})</span>
+                <span className={styles['improvement-value']}>+{lastResult.teamMapProficiency}</span>
               </div>
-              <div className="improvement-card">
-                <span className="improvement-label">{getObjectiveLabel(selectedObjective)}</span>
-                <span className="improvement-value">+{lastResult.objectiveProficiency}</span>
+              <div className={styles['improvement-card']}>
+                <span className={styles['improvement-label']}>{getObjectiveLabel(selectedObjective)}</span>
+                <span className={styles['improvement-value']}>+{lastResult.objectiveProficiency}</span>
               </div>
             </div>
           </div>
 
-          <div className="result-section">
+          <div className={styles['result-section']}>
             <h4>Player Development</h4>
-            <div className="player-improvements">
+            <div className={styles['player-improvements']}>
               {lastResult.playerImprovements.map((imp: any) => (
-                <div key={imp.playerId} className="player-improvement-card">
+                <div key={imp.playerId} className={styles['player-improvement-card']}>
                   <h5>{imp.playerName}</h5>
                   
                   {imp.agentProficiency > 0 && (
-                    <div className="stat-gain">
+                    <div className={styles['stat-gain']}>
                       <span>Agent Proficiency:</span>
-                      <span className="gain-value">+{imp.agentProficiency}</span>
+                      <span className={styles['gain-value']}>+{imp.agentProficiency}</span>
                     </div>
                   )}
                   
                   {Object.keys(imp.statImprovements).length > 0 && (
-                    <div className="stat-gains">
+                    <div className={styles['stat-gains']}>
                       {Object.entries(imp.statImprovements).map(([stat, value]: [string, any]) => (
-                        <div key={stat} className="stat-gain">
+                        <div key={stat} className={styles['stat-gain']}>
                           <span>{stat}:</span>
-                          <span className="gain-value">+{value}</span>
+                          <span className={styles['gain-value']}>+{value}</span>
                         </div>
                       ))}
                     </div>
                   )}
                   
                   {imp.synergyGains.length > 0 && (
-                    <div className="synergy-gains">
+                    <div className={styles['synergy-gains']}>
                       <span>Synergy Improvements:</span>
                       {imp.synergyGains.map((syn: any) => {
                         const teammate = composition.find(c => c.playerId === syn.playerId);
                         return (
-                          <div key={syn.playerId} className="synergy-gain">
+                          <div key={syn.playerId} className={styles['synergy-gain']}>
                             <span>{teammate?.playerName}</span>
-                            <span className="gain-value">+{syn.change}</span>
+                            <span className={styles['gain-value']}>+{syn.change}</span>
                           </div>
                         );
                       })}
@@ -211,8 +211,8 @@ export default function ScrimCenter() {
             </div>
           </div>
 
-          <div className="result-actions">
-            <button className="primary-button" onClick={handleReset}>
+          <div className={styles['result-actions']}>
+            <button className={styles['primary-button']} onClick={handleReset}>
               {scrimsThisWeek < MAX_SCRIMS_PER_WEEK ? 'Schedule Another Scrim' : 'Back to Training'}
             </button>
           </div>
@@ -222,49 +222,49 @@ export default function ScrimCenter() {
   }
 
   return (
-    <div className="scrim-center">
-      <div className="scrim-header">
+    <div className={styles['scrim-center']}>
+      <div className={styles['scrim-header']}>
         <h2>Scrim Center</h2>
-        <div className="scrims-remaining">
+        <div className={styles['scrims-remaining']}>
           {scrimsThisWeek} / {MAX_SCRIMS_PER_WEEK} Scrims Used This Week
         </div>
       </div>
 
       {scrimsThisWeek >= MAX_SCRIMS_PER_WEEK && (
-        <div className="warning-banner">
+        <div className={styles['warning-banner']}>
           You've reached the maximum scrims for this week. Complete matches to advance to next week.
         </div>
       )}
 
-      <div className="scrim-stepper">
-        <div className={`step ${currentStep === 'select_map' ? 'active' : ''} ${selectedMap ? 'completed' : ''}`}>
+      <div className={styles['scrim-stepper']}>
+        <div className={`${styles.step} ${currentStep === 'select_map' ? styles.active : ''} ${selectedMap ? styles.completed : ''}`}>
           1. Map
         </div>
-        <div className={`step ${currentStep === 'select_opponent' ? 'active' : ''} ${selectedOpponent ? 'completed' : ''}`}>
+        <div className={`${styles.step} ${currentStep === 'select_opponent' ? styles.active : ''} ${selectedOpponent ? styles.completed : ''}`}>
           2. Opponent
         </div>
-        <div className={`step ${currentStep === 'select_composition' ? 'active' : ''} ${composition.length === 5 ? 'completed' : ''}`}>
+        <div className={`${styles.step} ${currentStep === 'select_composition' ? styles.active : ''} ${composition.length === 5 ? styles.completed : ''}`}>
           3. Roster
         </div>
-        <div className={`step ${currentStep === 'select_objective' ? 'active' : ''}`}>
+        <div className={`${styles.step} ${currentStep === 'select_objective' ? styles.active : ''}`}>
           4. Objective
         </div>
       </div>
 
       {/* Step 1: Map Selection */}
       {currentStep === 'select_map' && (
-        <div className="step-content">
+        <div className={styles['step-content']}>
           <h3>Select Practice Map</h3>
-          <p className="step-description">Choose which map your team will practice on</p>
-          <div className="map-grid">
+          <p className={styles['step-description']}>Choose which map your team will practice on</p>
+          <div className={styles['map-grid']}>
             {MAPS.map(map => (
               <div
                 key={map}
-                className={`map-card ${selectedMap === map ? 'selected' : ''}`}
+                className={`${styles['map-card']} ${selectedMap === map ? styles.selected : ''}`}
                 onClick={() => handleMapSelect(map)}
               >
-                <div className="map-name">{map}</div>
-                <div className="map-prof">
+                <div className={styles['map-name']}>{map}</div>
+                <div className={styles['map-prof']}>
                   Team Proficiency: {playerTeam.mapPracticeLevel?.[map] || 50}
                 </div>
               </div>
@@ -275,34 +275,34 @@ export default function ScrimCenter() {
 
       {/* Step 2: Opponent Selection */}
       {currentStep === 'select_opponent' && (
-        <div className="step-content">
-          <div className="step-header">
-            <button className="back-button" onClick={() => setCurrentStep('select_map')}>← Back</button>
+        <div className={styles['step-content']}>
+          <div className={styles['step-header']}>
+            <button className={styles['back-button']} onClick={() => setCurrentStep('select_map')}>← Back</button>
             <h3>Select Practice Opponent</h3>
           </div>
-          <p className="step-description">Higher quality opponents provide better training</p>
-          <div className="opponent-list">
+          <p className={styles['step-description']}>Higher quality opponents provide better training</p>
+          <div className={styles['opponent-list']}>
             {availableOpponents.map(opponent => (
               <div
                 key={opponent.teamId}
-                className={`opponent-card ${selectedOpponent?.teamId === opponent.teamId ? 'selected' : ''}`}
+                className={`${styles['opponent-card']} ${selectedOpponent?.teamId === opponent.teamId ? styles.selected : ''}`}
                 onClick={() => handleOpponentSelect(opponent)}
               >
-                <div className="opponent-info">
+                <div className={styles['opponent-info']}>
                   <h4>{opponent.teamName}</h4>
-                  <span className="opponent-region">{opponent.region}</span>
+                  <span className={styles['opponent-region']}>{opponent.region}</span>
                 </div>
-                <div className="opponent-stats">
-                  <div className="opponent-stat">
-                    <span className="stat-label">Quality</span>
-                    <span className={`stat-value ${getQualityClass(opponent.scrimQuality)}`}>
+                <div className={styles['opponent-stats']}>
+                  <div className={styles['opponent-stat']}>
+                    <span className={styles['stat-label']}>Quality</span>
+                    <span className={`${styles['stat-value']} ${styles[getQualityClass(opponent.scrimQuality)]}`}>
                       {opponent.scrimQuality}
                     </span>
                   </div>
                   {selectedMap && (
-                    <div className="opponent-stat">
-                      <span className="stat-label">{selectedMap}</span>
-                      <span className="stat-value">
+                    <div className={styles['opponent-stat']}>
+                      <span className={styles['stat-label']}>{selectedMap}</span>
+                      <span className={styles['stat-value']}>
                         {opponent.mapStrengths[selectedMap] || 50}
                       </span>
                     </div>
@@ -312,7 +312,7 @@ export default function ScrimCenter() {
             ))}
           </div>
           <button 
-            className="continue-button"
+            className={styles['continue-button']}
             disabled={!selectedOpponent}
             onClick={() => setCurrentStep('select_composition')}
           >
@@ -323,52 +323,52 @@ export default function ScrimCenter() {
 
       {/* Step 3: Composition */}
       {currentStep === 'select_composition' && (
-        <div className="step-content">
-          <div className="step-header">
-            <button className="back-button" onClick={() => setCurrentStep('select_opponent')}>← Back</button>
+        <div className={styles['step-content']}>
+          <div className={styles['step-header']}>
+            <button className={styles['back-button']} onClick={() => setCurrentStep('select_opponent')}>← Back</button>
             <h3>Select Team Composition</h3>
           </div>
-          <p className="step-description">Choose 5 players and their agents ({composition.length}/5 selected)</p>
+          <p className={styles['step-description']}>Choose 5 players and their agents ({composition.length}/5 selected)</p>
           
-          <div className="composition-layout">
-            <div className="player-selection">
+          <div className={styles['composition-layout']}>
+            <div className={styles['player-selection']}>
               <h4>Available Players</h4>
-              <div className="player-list">
+              <div className={styles['player-list']}>
                 {availablePlayers
                   .filter(p => !composition.find(c => c.playerId === p.id))
                   .map(player => (
                     <div
                       key={player.id}
-                      className={`player-select-card ${composition.length >= 5 ? 'disabled' : ''}`}
+                      className={`${styles['player-select-card']} ${composition.length >= 5 ? styles['disabled'] : ''}`}
                       onClick={() => handlePlayerSelect(player)}
                     >
-                      <div className="player-info">
+                      <div className={styles['player-info']}>
                         <h5>{player.name}</h5>
-                        <span className="player-role">{player.role}</span>
-                        {player.status === 'reserve' && <span className="reserve-badge">Reserve</span>}
+                        <span className={styles['player-role']}>{player.role}</span>
+                        {player.status === 'reserve' && <span className={styles['reserve-badge']}>Reserve</span>}
                       </div>
                     </div>
                   ))}
               </div>
             </div>
 
-            <div className="selected-composition">
+            <div className={styles['selected-composition']}>
               <h4>Team Composition</h4>
               {composition.length === 0 ? (
-                <p className="empty-message">Select 5 players for the scrim</p>
+                <p className={styles['empty-message']}>Select 5 players for the scrim</p>
               ) : (
-                <div className="composition-list">
+                <div className={styles['composition-list']}>
                   {composition.map(comp => {
                     const player = availablePlayers.find(p => p.id === comp.playerId)!;
                     const playerAgents = Object.keys(player.agentPool) as Agent[];
                     
                     return (
-                      <div key={comp.playerId} className="composition-card">
-                        <div className="comp-player-info">
+                      <div key={comp.playerId} className={styles['composition-card']}>
+                        <div className={styles['comp-player-info']}>
                           <h5>{comp.playerName}</h5>
-                          <span className="comp-role">{player.role}</span>
+                          <span className={styles['comp-role']}>{player.role}</span>
                         </div>
-                        <div className="agent-selector">
+                        <div className={styles['agent-selector']}>
                           <label>Agent:</label>
                           <select 
                             value={comp.agent}
@@ -382,7 +382,7 @@ export default function ScrimCenter() {
                           </select>
                         </div>
                         <button 
-                          className="remove-button"
+                          className={styles['remove-button']}
                           onClick={() => handleRemovePlayer(comp.playerId)}
                         >
                           Remove
@@ -396,7 +396,7 @@ export default function ScrimCenter() {
           </div>
           
           <button 
-            className="continue-button"
+            className={styles['continue-button']}
             disabled={composition.length !== 5}
             onClick={() => setCurrentStep('select_objective')}
           >
@@ -407,24 +407,24 @@ export default function ScrimCenter() {
 
       {/* Step 4: Objective */}
       {currentStep === 'select_objective' && (
-        <div className="step-content">
-          <div className="step-header">
-            <button className="back-button" onClick={() => setCurrentStep('select_composition')}>← Back</button>
+        <div className={styles['step-content']}>
+          <div className={styles['step-header']}>
+            <button className={styles['back-button']} onClick={() => setCurrentStep('select_composition')}>← Back</button>
             <h3>Select Practice Objective</h3>
           </div>
-          <p className="step-description">Focus your practice on specific aspects of gameplay</p>
+          <p className={styles['step-description']}>Focus your practice on specific aspects of gameplay</p>
           
-          <div className="objective-grid">
+          <div className={styles['objective-grid']}>
             {objectives.map(objective => (
               <div
                 key={objective}
-                className={`objective-card ${selectedObjective === objective ? 'selected' : ''}`}
+                className={`${styles['objective-card']} ${selectedObjective === objective ? styles['selected'] : ''}`}
                 onClick={() => setSelectedObjective(objective)}
               >
                 <h4>{getObjectiveLabel(objective)}</h4>
                 <p>{getObjectiveDescription(objective)}</p>
                 {selectedOpponent && (
-                  <div className="opponent-strength">
+                  <div className={styles['opponent-strength']}>
                     Opponent Strength: {selectedOpponent.objectiveStrengths[objective] || 50}/100
                   </div>
                 )}
@@ -432,9 +432,9 @@ export default function ScrimCenter() {
             ))}
           </div>
 
-          <div className="scrim-summary">
+          <div className={styles['scrim-summary']}>
             <h4>Scrim Summary</h4>
-            <div className="summary-grid">
+            <div className={styles['summary-grid']}>
               <div><strong>Map:</strong> {selectedMap}</div>
               <div><strong>Opponent:</strong> {selectedOpponent?.teamName}</div>
               <div><strong>Players:</strong> {composition.length}</div>
@@ -443,7 +443,7 @@ export default function ScrimCenter() {
           </div>
 
           <button 
-            className="start-button"
+            className={styles['start-button']}
             disabled={scrimsThisWeek >= MAX_SCRIMS_PER_WEEK}
             onClick={handleStartScrim}
           >
