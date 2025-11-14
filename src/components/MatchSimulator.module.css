@@ -1,0 +1,204 @@
+.match-simulator {
+  background: rgba(30, 30, 45, 0.9);
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 600px;
+  margin: 2rem auto;
+}
+
+.match-simulator h3 {
+  color: #fff;
+  text-align: center;
+  margin: 0 0 2rem 0;
+  font-size: 1.5rem;
+}
+
+.match-simulator h4 {
+  color: #fff;
+  margin: 0 0 1rem 0;
+}
+
+/* Match Preview */
+.match-preview {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.team-preview {
+  text-align: center;
+}
+
+.team-preview h4 {
+  margin: 0 0 0.5rem 0;
+  color: #fff;
+  font-size: 1.2rem;
+}
+
+.team-short {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+}
+
+.vs {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #60a5fa;
+}
+
+/* Match Result */
+.match-result {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.team-result {
+  text-align: center;
+}
+
+.team-result h4 {
+  margin: 0 0 1rem 0;
+  color: #fff;
+}
+
+.score {
+  font-size: 3rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.score.winner {
+  color: #4ade80;
+}
+
+/* Map Results */
+.map-results {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.map-results h4 {
+  margin: 0 0 1rem 0;
+  color: #60a5fa;
+}
+
+.map-result {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+}
+
+.map-result:last-child {
+  margin-bottom: 0;
+}
+
+.map-name {
+  color: #fff;
+  font-weight: 600;
+  flex: 1;
+}
+
+.map-score {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.map-score span.winner {
+  color: #4ade80;
+  font-weight: 700;
+}
+
+.overtime-badge {
+  background: rgba(251, 191, 36, 0.2);
+  color: #fbbf24;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-left: 0.5rem;
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.simulate-button {
+  background: linear-gradient(135deg, #60a5fa, #3b82f6);
+  border: none;
+  color: white;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.simulate-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(96, 165, 250, 0.4);
+}
+
+.cancel-button,
+.close-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancel-button:hover,
+.close-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Simulating State */
+.simulating {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  color: #60a5fa;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(96, 165, 250, 0.2);
+  border-top-color: #60a5fa;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

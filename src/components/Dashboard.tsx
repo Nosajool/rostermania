@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { Region } from '../types/types';
+import NextMatch from './NextMatch';
 import RosterView from './RosterView';
 import ScheduleView from './ScheduleView';
 import ScrimCenter from './ScrimCenter'
@@ -137,10 +138,7 @@ export default function Dashboard({ teamName, region }: DashboardProps) {
               </div>
             </div>
 
-            <div className="next-match">
-              <h3>Next Match</h3>
-              <p className="coming-soon">Match schedule coming soon...</p>
-            </div>
+            <NextMatch teamName={teamName} />
           </div>
         )}
 
