@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import type { Match, Team, Region, Player } from '../types/types';
+import type { Match, Team, Region, Player, PlayerStats, ScrimResult, WeeklyScrimData } from '../types/types';
 import { generateSchedule, getCachedTeam } from '../utils/teamUtils';
 import { initializeDevelopment, applyTraining, type TrainingFocus } from '../utils/playerDevelopment';
 
@@ -10,6 +10,7 @@ interface GameState {
   schedule: Match[];
   currentWeek: number;
   currentStage: 'Stage 1' | 'Stage 2' | 'Playoffs';
+  weeklyScrimData: WeeklyScrimData;
 }
 
 interface GameContextType extends GameState {
@@ -22,6 +23,7 @@ interface GameContextType extends GameState {
   moveToReserve: (playerId: string) => void;
   moveToActive: (playerId: string) => void;
   trainPlayer: (playerId: string, focus: TrainingFocus) => void;
+  completeScrim: (result: ScrimResult) => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -78,6 +80,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
       schedule,
       currentWeek: 1,
       currentStage: 'Stage 1',
+      weeklyScrimData: {
+        week: 1,
+        scrimsCompleted: 0,
+        scrimSessions: [],
+        scrimResults: [],
+      },
     });
   };
 
@@ -94,6 +102,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setGameState(prev => ({
       ...prev,
       currentWeek: prev.currentWeek + 1,
+      weeklyScrimData: {
+        week: prev.currentWeek + 1,
+        scrimsCompleted: 0,
+        scrimSessions: [],
+        scrimResults: [],
+      },
     }));
   };
 
@@ -106,6 +120,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
       schedule: [],
       currentWeek: 1,
       currentStage: 'Stage 1',
+      weeklyScrimData: {
+        week: 1,
+        scrimsCompleted: 0,
+        scrimSessions: [],
+        scrimResults: [],
+      },
     });
   };
 
@@ -328,6 +348,113 @@ export function GameProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  const completeScrim = (result: ScrimResult) => {
+    setGameState(prev => {
+      if (!prev.playerTeam) return prev;
+      
+      // Apply improvements from scrim result
+      const updatedRoster = prev.playerTeam.roster.map(player => {
+        const improvement = result.playerImprovements.find(
+          imp => imp.playerId === player.id
+        );
+        
+        if (!improvement) return player;
+        
+        // Update agent proficiency
+        const updatedAgentPool = { ...player.agentPool };
+        const scrimAgent = result.session.composition.find(
+          c => c.playerId === player.id
+        )?.agent;
+        
+        if (scrimAgent && improvement.agentProficiency > 0) {
+          updatedAgentPool[scrimAgent] = Math.min(
+            100,
+            (updatedAgentPool[scrimAgent] || 0) + improvement.agentProficiency
+          );
+        }
+        
+        // Update stats
+        const updatedStats = { ...player.stats };
+        Object.entries(improvement.statImprovements).forEach(([stat, gain]) => {
+          const statKey = stat as keyof PlayerStats;
+          updatedStats[statKey] = Math.min(
+            player.potential || 100,
+            updatedStats[statKey] + (gain as number)
+          );
+        });
+        
+        // Update synergies
+        const updatedSynergies = [...player.synergies];
+        improvement.synergyGains.forEach(gain => {
+          const existingIndex = updatedSynergies.findIndex(
+            s => s.playerId === gain.playerId
+          );
+          if (existingIndex >= 0) {
+            updatedSynergies[existingIndex].value = Math.min(
+              30,
+              updatedSynergies[existingIndex].value + gain.change
+            );
+          } else {
+            updatedSynergies.push({
+              playerId: gain.playerId,
+              value: gain.change,
+            });
+          }
+        });
+        
+        return {
+          ...player,
+          agentPool: updatedAgentPool,
+          stats: updatedStats,
+          synergies: updatedSynergies,
+        };
+      });
+      
+      // Update team map proficiency
+      const updatedMapPracticeLevel = {
+        ...prev.playerTeam.mapPracticeLevel,
+        [result.session.map]: Math.min(
+          100,
+          (prev.playerTeam.mapPracticeLevel?.[result.session.map] || 50) +
+            result.teamMapProficiency
+        ),
+      };
+      
+      const updatedPlayerTeam = {
+        ...prev.playerTeam,
+        roster: updatedRoster,
+        mapPracticeLevel: updatedMapPracticeLevel,
+      };
+      
+      // Update weekly scrim data
+      const updatedWeeklyScrimData = {
+        ...prev.weeklyScrimData,
+        scrimsCompleted: prev.weeklyScrimData.scrimsCompleted + 1,
+        scrimSessions: [...prev.weeklyScrimData.scrimSessions, result.session],
+        scrimResults: [...prev.weeklyScrimData.scrimResults, result],
+      };
+      
+      // Update in allTeams and schedule
+      const updatedAllTeams = prev.allTeams.map(t =>
+        t.name === prev.playerTeam!.name ? updatedPlayerTeam : t
+      );
+      
+      const updatedSchedule = prev.schedule.map(match => ({
+        ...match,
+        teamA: match.teamA.name === prev.playerTeam!.name ? updatedPlayerTeam : match.teamA,
+        teamB: match.teamB.name === prev.playerTeam!.name ? updatedPlayerTeam : match.teamB,
+      }));
+      
+      return {
+        ...prev,
+        playerTeam: updatedPlayerTeam,
+        allTeams: updatedAllTeams,
+        schedule: updatedSchedule,
+        weeklyScrimData: updatedWeeklyScrimData,
+      };
+    });
+  };
+
   return (
     <GameContext.Provider value={{
       ...gameState,
@@ -340,6 +467,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       moveToReserve,
       moveToActive,
       trainPlayer,
+      completeScrim
     }}>
       {children}
     </GameContext.Provider>

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { Region } from '../types/types';
 import RosterView from './RosterView';
 import ScheduleView from './ScheduleView';
+import ScrimCenter from './ScrimCenter'
 import StandingsView from './StandingsView';
 import TrainingCenter from './TrainingCenter';
 import { useGame } from '../hooks/useGame';
@@ -12,7 +13,7 @@ interface DashboardProps {
   region: Region;
 }
 
-type DashboardTab = 'overview' | 'roster' | 'schedule' | 'standings' | 'training';
+type DashboardTab = 'overview' | 'roster' | 'schedule' | 'standings' | 'training' | 'scrims';
 
 export default function Dashboard({ teamName, region }: DashboardProps) {
   const [activeTab, setActiveTab] = useState<DashboardTab>('roster');
@@ -104,6 +105,12 @@ export default function Dashboard({ teamName, region }: DashboardProps) {
         >
           Training
         </button>
+        <button
+          className={`tab-button ${activeTab === 'scrims' ? 'active' : ''}`}
+          onClick={() => setActiveTab('scrims')}
+        >
+          Scrims
+        </button>
       </div>
 
       {/* Content Area */}
@@ -151,6 +158,10 @@ export default function Dashboard({ teamName, region }: DashboardProps) {
 
         {activeTab === 'training' && (
           <TrainingCenter />
+        )}
+
+        {activeTab === 'scrims' && (
+          <ScrimCenter />
         )}
       </div>
     </div>
