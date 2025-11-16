@@ -7,37 +7,193 @@ import type {
   Agent 
 } from '../types/types';
 
-// Simulate a single round (team returns true if they win the round)
+// Kill event with timestamp
+interface KillEvent {
+  killer: Player;
+  victim: Player;
+  timestamp: number; // seconds into round
+  wasTraded: boolean;
+}
+
+// Round result with detailed kill tracking
+interface RoundResult {
+  winner: 'attack' | 'defense';
+  winCondition: 'elimination' | 'bomb_detonated' | 'bomb_defused' | 'time_expired';
+  kills: KillEvent[];
+  survivors: Player[]; // Players who survived the round
+  bombPlanted: boolean;
+  plantTime?: number; // When bomb was planted
+}
+
+// Simulate a single round with realistic mechanics
 function simulateRound(
   attackingTeam: Player[],
   defendingTeam: Player[],
   map: Map
-): { winner: 'attack' | 'defense'; firstKill?: string; firstDeath?: string } {
+): RoundResult {
+  const kills: KillEvent[] = [];
+  const aliveAttackers = [...attackingTeam];
+  const aliveDefenders = [...defendingTeam];
+  
+  const PLANT_TIME = 90; // 1:30 to plant
+  const DEFUSE_TIME = 45; // 45 seconds to defuse after plant
+  const TRADE_WINDOW = 3; // 3 seconds to get a trade
+  
+  let currentTime = 0;
+  let bombPlanted = false;
+  let plantTime = 0;
+  
   // Calculate team strengths
   const attackStrength = calculateTeamStrength(attackingTeam, 'attack', map);
   const defenseStrength = calculateTeamStrength(defendingTeam, 'defense', map);
   
-  // Add randomness (20% variance)
-  const attackRoll = attackStrength * (0.9 + Math.random() * 0.2);
-  const defenseRoll = defenseStrength * (0.9 + Math.random() * 0.2);
+  // Determine round pacing based on team strengths
+  const avgKillTime = 15 + Math.random() * 10; // Kills happen every 15-25 seconds on average
+  
+  // Simulate engagement phase
+  while (aliveAttackers.length > 0 && aliveDefenders.length > 0) {
+    currentTime += Math.random() * avgKillTime * 0.5 + avgKillTime * 0.5;
+    
+    // Check if attackers try to plant
+    if (!bombPlanted && currentTime < PLANT_TIME && aliveAttackers.length > aliveDefenders.length) {
+      // Likely plant scenario
+      if (Math.random() < 0.7) {
+        bombPlanted = true;
+        plantTime = currentTime;
+      }
+    }
+    
+    // Time expired without plant
+    if (!bombPlanted && currentTime >= PLANT_TIME) {
+      return {
+        winner: 'defense',
+        winCondition: 'time_expired',
+        kills,
+        survivors: [...aliveDefenders],
+        bombPlanted: false,
+      };
+    }
+    
+    // Bomb detonates
+    if (bombPlanted && (currentTime - plantTime) >= DEFUSE_TIME) {
+      return {
+        winner: 'attack',
+        winCondition: 'bomb_detonated',
+        kills,
+        survivors: [...aliveAttackers],
+        bombPlanted: true,
+        plantTime,
+      };
+    }
+    
+    // Simulate a kill
+    const { killer, victim, team } = simulateKill(aliveAttackers, aliveDefenders, attackStrength, defenseStrength);
+    
+    const killEvent: KillEvent = {
+      killer,
+      victim,
+      timestamp: currentTime,
+      wasTraded: false,
+    };
+    
+    kills.push(killEvent);
+    
+    // Remove victim from alive list
+    if (team === 'attack') {
+      const victimIndex = aliveAttackers.findIndex(p => p.id === victim.id);
+      if (victimIndex !== -1) aliveAttackers.splice(victimIndex, 1);
+    } else {
+      const victimIndex = aliveDefenders.findIndex(p => p.id === victim.id);
+      if (victimIndex !== -1) aliveDefenders.splice(victimIndex, 1);
+    }
+  }
+  
+  // Check for trades (kills within TRADE_WINDOW seconds)
+  for (let i = 0; i < kills.length - 1; i++) {
+    const kill = kills[i];
+    const nextKill = kills[i + 1];
+    
+    // Check if next kill is a trade (victim's team kills the killer)
+    if (nextKill.timestamp - kill.timestamp <= TRADE_WINDOW) {
+      const victimWasAttacker = attackingTeam.some(p => p.id === kill.victim.id);
+      const nextKillerIsAttacker = attackingTeam.some(p => p.id === nextKill.killer.id);
+      
+      // Trade happened if the victim's teammate killed the killer
+      if (victimWasAttacker === nextKillerIsAttacker && nextKill.victim.id === kill.killer.id) {
+        kill.wasTraded = true;
+      }
+    }
+  }
   
   // Determine winner
-  const winner = attackRoll > defenseRoll ? 'attack' : 'defense';
+  if (aliveAttackers.length === 0) {
+    // Defenders eliminated all attackers
+    if (bombPlanted) {
+      // But bomb is planted - can they defuse?
+      const timeToDefuse = DEFUSE_TIME - (currentTime - plantTime);
+      if (timeToDefuse > 7) { // Need at least 7 seconds to defuse
+        return {
+          winner: 'defense',
+          winCondition: 'bomb_defused',
+          kills,
+          survivors: [...aliveDefenders],
+          bombPlanted: true,
+          plantTime,
+        };
+      } else {
+        return {
+          winner: 'attack',
+          winCondition: 'bomb_detonated',
+          kills,
+          survivors: [],
+          bombPlanted: true,
+          plantTime,
+        };
+      }
+    } else {
+      return {
+        winner: 'defense',
+        winCondition: 'elimination',
+        kills,
+        survivors: [...aliveDefenders],
+        bombPlanted: false,
+      };
+    }
+  } else {
+    // Attackers eliminated all defenders
+    return {
+      winner: 'attack',
+      winCondition: bombPlanted ? 'bomb_detonated' : 'elimination',
+      kills,
+      survivors: [...aliveAttackers],
+      bombPlanted,
+      plantTime: bombPlanted ? plantTime : undefined,
+    };
+  }
+}
+
+// Simulate a single kill engagement
+function simulateKill(
+  aliveAttackers: Player[],
+  aliveDefenders: Player[],
+  attackStrength: number,
+  defenseStrength: number
+): { killer: Player; victim: Player; team: 'attack' | 'defense' } {
+  // Determine which team gets the kill based on relative strength
+  const attackRoll = attackStrength * (0.8 + Math.random() * 0.4);
+  const defenseRoll = defenseStrength * (0.8 + Math.random() * 0.4);
   
-  // Simulate first blood
-  const firstKillPlayer = winner === 'attack' 
-    ? getRandomWeightedPlayer(attackingTeam, 'entry')
-    : getRandomWeightedPlayer(defendingTeam, 'entry');
+  const attackerKills = attackRoll > defenseRoll;
   
-  const firstDeathPlayer = winner === 'attack'
-    ? getRandomWeightedPlayer(defendingTeam, 'mechanics')
-    : getRandomWeightedPlayer(attackingTeam, 'mechanics');
-  
-  return {
-    winner,
-    firstKill: firstKillPlayer?.name,
-    firstDeath: firstDeathPlayer?.name,
-  };
+  if (attackerKills) {
+    const killer = getRandomWeightedPlayer(aliveAttackers, 'entry') || aliveAttackers[0];
+    const victim = getRandomWeightedPlayer(aliveDefenders, 'mechanics') || aliveDefenders[0];
+    return { killer, victim, team: 'defense' };
+  } else {
+    const killer = getRandomWeightedPlayer(aliveDefenders, 'entry') || aliveDefenders[0];
+    const victim = getRandomWeightedPlayer(aliveAttackers, 'mechanics') || aliveAttackers[0];
+    return { killer, victim, team: 'attack' };
+  }
 }
 
 // Calculate overall team strength for a side
@@ -89,6 +245,8 @@ function getRandomWeightedPlayer(team: Player[], stat: keyof Player['stats']): P
   const weights = team.map(p => p.stats[stat]);
   const totalWeight = weights.reduce((sum, w) => sum + w, 0);
   
+  if (totalWeight === 0) return team[0];
+  
   let random = Math.random() * totalWeight;
   
   for (let i = 0; i < team.length; i++) {
@@ -115,6 +273,13 @@ export function simulateMap(
   const teamAPerf = initializePerformances(teamA.roster);
   const teamBPerf = initializePerformances(teamB.roster);
   
+  // Track KAST data per round
+  const teamAKastRounds: boolean[] = Array(teamA.roster.length).fill(false);
+  const teamBKastRounds: boolean[] = Array(teamB.roster.length).fill(false);
+  
+  const teamAKastCount: number[] = Array(teamA.roster.length).fill(0);
+  const teamBKastCount: number[] = Array(teamB.roster.length).fill(0);
+  
   // Standard match: 24 rounds (12 attack, 12 defense each)
   // Then overtime if tied
   
@@ -132,27 +297,33 @@ export function simulateMap(
     );
     
     // Update scores
-    if ((result.winner === 'attack' && teamAAttacking) || 
-        (result.winner === 'defense' && !teamAAttacking)) {
+    const teamAWon = (result.winner === 'attack' && teamAAttacking) || 
+                     (result.winner === 'defense' && !teamAAttacking);
+    
+    if (teamAWon) {
       teamAScore++;
-      updatePerformances(teamAPerf, teamA.roster, true, result);
-      updatePerformances(teamBPerf, teamB.roster, false, result);
     } else {
       teamBScore++;
-      updatePerformances(teamAPerf, teamA.roster, false, result);
-      updatePerformances(teamBPerf, teamB.roster, true, result);
     }
     
-    // Track attack/defense splits
-    if (teamAAttacking) {
-      if (result.winner === 'attack') {
-        teamAPerf.forEach(p => (p as any).attackRoundsWon = ((p as any).attackRoundsWon || 0) + 1);
-      }
-    } else {
-      if (result.winner === 'defense') {
-        teamAPerf.forEach(p => (p as any).defenseRoundsWon = ((p as any).defenseRoundsWon || 0) + 1);
-      }
-    }
+    // Update performances based on round result
+    updatePerformancesFromRound(
+      teamAPerf, 
+      teamA.roster, 
+      result, 
+      teamAAttacking,
+      teamAWon,
+      teamAKastCount
+    );
+    
+    updatePerformancesFromRound(
+      teamBPerf, 
+      teamB.roster, 
+      result, 
+      !teamAAttacking,
+      !teamAWon,
+      teamBKastCount
+    );
     
     // Check win conditions
     if (teamAScore >= 13 && teamAScore - teamBScore >= 2) {
@@ -162,7 +333,7 @@ export function simulateMap(
       break;
     }
     
-    // Overtime cap at round 30 (15-15, sudden death after)
+    // Overtime cap at round 30
     if (totalRounds >= 30) {
       if (teamAScore > teamBScore) break;
       if (teamBScore > teamAScore) break;
@@ -173,8 +344,8 @@ export function simulateMap(
   const overtime = totalRounds > 24;
   
   // Finalize performance stats
-  finalizePerformances(teamAPerf, totalRounds);
-  finalizePerformances(teamBPerf, totalRounds);
+  finalizePerformances(teamAPerf, totalRounds, teamAKastCount);
+  finalizePerformances(teamBPerf, totalRounds, teamBKastCount);
   
   return {
     map,
@@ -243,46 +414,87 @@ function getPlayerAgent(player: Player): Agent {
   return bestAgent;
 }
 
-// Update performance stats for a round
-function updatePerformances(
+// Update performance stats from a round result
+function updatePerformancesFromRound(
   performances: PlayerMapPerformance[],
   roster: Player[],
+  roundResult: RoundResult,
+  isAttacking: boolean,
   wonRound: boolean,
-  roundResult: { firstKill?: string; firstDeath?: string }
+  kastCount: number[]
 ) {
-  performances.forEach((perf, idx) => {
-    const player = roster[idx];
+  // Track kills and deaths from kill events
+  roundResult.kills.forEach((killEvent, killIndex) => {
+    const killerIdx = roster.findIndex(p => p.id === killEvent.killer.id);
+    const victimIdx = roster.findIndex(p => p.id === killEvent.victim.id);
     
-    // Simulate kills based on mechanics and role
-    const killChance = (player.stats.mechanics + player.stats.entry) / 200;
-    const kills = Math.random() < killChance ? (Math.random() < 0.3 ? 2 : 1) : 0;
-    perf.kills += kills;
-    
-    // Deaths (less if won round)
-    const deathChance = wonRound ? 0.15 : 0.35;
-    if (Math.random() < deathChance) {
-      perf.deaths++;
+    if (killerIdx !== -1) {
+      performances[killerIdx].kills++;
+      
+      // First kill
+      if (killIndex === 0) {
+        performances[killerIdx].firstKills++;
+      }
+      
+      // KAST: Got a kill
+      kastCount[killerIdx] = 1;
+      
+      // Check for multi-kills (kills within same round)
+      const killerKillsThisRound = roundResult.kills.filter(k => k.killer.id === killEvent.killer.id).length;
+      if (killerKillsThisRound === 2) performances[killerIdx].doubleKills++;
+      if (killerKillsThisRound === 3) performances[killerIdx].tripleKills++;
+      if (killerKillsThisRound === 4) performances[killerIdx].quadraKills++;
+      if (killerKillsThisRound === 5) performances[killerIdx].aceKills++;
     }
     
-    // Assists based on support stat
-    const assistChance = player.stats.support / 150;
-    if (Math.random() < assistChance) {
-      perf.assists++;
-    }
-    
-    // First kills/deaths
-    if (roundResult.firstKill === player.name) {
-      perf.firstKills++;
-    }
-    if (roundResult.firstDeath === player.name) {
-      perf.firstDeaths++;
+    if (victimIdx !== -1) {
+      performances[victimIdx].deaths++;
+      
+      // First death
+      if (killIndex === 0) {
+        performances[victimIdx].firstDeaths++;
+      }
+      
+      // KAST: Was traded
+      if (killEvent.wasTraded) {
+        kastCount[victimIdx] = 1;
+      }
     }
   });
+  
+  // Track survivors (KAST: Survived)
+  roundResult.survivors.forEach(survivor => {
+    const idx = roster.findIndex(p => p.id === survivor.id);
+    if (idx !== -1) {
+      kastCount[idx] = 1;
+    }
+  });
+  
+  // Assists: Players on winning team who didn't get kills but survived or got traded
+  if (wonRound) {
+    roster.forEach((player, idx) => {
+      const gotKill = roundResult.kills.some(k => k.killer.id === player.id);
+      const died = roundResult.kills.some(k => k.victim.id === player.id);
+      const survived = roundResult.survivors.some(s => s.id === player.id);
+      
+      // Assist chance for players who didn't get the kill but were involved
+      if (!gotKill && (survived || died)) {
+        if (Math.random() < player.stats.support / 150) {
+          performances[idx].assists++;
+          kastCount[idx] = 1; // KAST: Got assist
+        }
+      }
+    });
+  }
 }
 
 // Calculate final stats
-function finalizePerformances(performances: PlayerMapPerformance[], totalRounds: number) {
-  performances.forEach(perf => {
+function finalizePerformances(
+  performances: PlayerMapPerformance[], 
+  totalRounds: number,
+  kastCount: number[]
+) {
+  performances.forEach((perf, idx) => {
     perf.kd = perf.deaths > 0 ? perf.kills / perf.deaths : perf.kills;
     perf.kpr = perf.kills / totalRounds;
     perf.apr = perf.assists / totalRounds;
@@ -295,8 +507,8 @@ function finalizePerformances(performances: PlayerMapPerformance[], totalRounds:
     // ADR (damage roughly correlates with ACS)
     perf.adr = Math.round(perf.acs * 0.7);
     
-    // KAST (simplified - rounds where player got K, A, S, or T)
-    perf.kast = Math.min(95, Math.round(((perf.kills + perf.assists) / totalRounds) * 100));
+    // KAST (Kill, Assist, Survived, Traded percentage)
+    perf.kast = Math.round((kastCount[idx] / totalRounds) * 100);
     
     // Economy rating (simplified)
     perf.econRating = Math.round(50 + (perf.kd - 1) * 20);
