@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import type { Match, Map } from '../types/types';
+import type { Match, Map, MapResult } from '../types/types';
 import { useGame } from '../hooks/useGame';
 import { simulateBestOf3 } from '../utils/matchSimulator';
+import MapResultDetails from './MapResultDetails';
 import styles from './MatchSimulator.module.css';
 
 interface MatchSimulatorProps {
@@ -14,6 +15,7 @@ export default function MatchSimulator({ match, onClose }: MatchSimulatorProps) 
   const [isSimulating, setIsSimulating] = useState(false);
   const [simulationComplete, setSimulationComplete] = useState(false);
   const [result, setResult] = useState<Match | null>(null);
+  const [selectedMap, setSelectedMap] = useState<MapResult | null>(null);
 
   const handleSimulate = () => {
     setIsSimulating(true);
@@ -57,7 +59,12 @@ export default function MatchSimulator({ match, onClose }: MatchSimulatorProps) 
     
     return (
       <div className={styles['match-simulator']}>
-        <h3>Match Result</h3>
+        <div className={styles['simulator-header']}>
+          <h3>Match Result</h3>
+          <button className={styles['close-button']} onClick={handleClose}>
+            ← Back to Overview
+          </button>
+        </div>
         
         <div className={styles['match-result']}>
           <div className={styles['team-result']}>
@@ -80,7 +87,11 @@ export default function MatchSimulator({ match, onClose }: MatchSimulatorProps) 
         <div className={styles['map-results']}>
           <h4>Map Breakdown</h4>
           {result.maps.map((mapResult, idx) => (
-            <div key={idx} className={styles['map-result']}>
+            <div 
+              key={idx} 
+              className={`${styles['map-result']} ${selectedMap?.map === mapResult.map ? styles.selected : ''}`}
+              onClick={() => setSelectedMap(selectedMap?.map === mapResult.map ? null : mapResult)}
+            >
               <span className={styles['map-name']}>{mapResult.map}</span>
               <div className={styles['map-score']}>
                 <span className={mapResult.winner === 'teamA' ? styles.winner : ''}>
@@ -98,8 +109,19 @@ export default function MatchSimulator({ match, onClose }: MatchSimulatorProps) 
           ))}
         </div>
 
+        {/* Show detailed map statistics when a map is selected */}
+        {selectedMap && (
+          <div className={styles['map-details-container']}>
+            <MapResultDetails
+              mapResult={selectedMap}
+              teamAName={result.teamA.name}
+              teamBName={result.teamB.name}
+            />
+          </div>
+        )}
+
         <div className={styles['actions']}>
-          <button className={styles['close-button']} onClick={handleClose}>
+          <button className={styles['continue-button']} onClick={handleClose}>
             Continue
           </button>
         </div>
@@ -109,7 +131,12 @@ export default function MatchSimulator({ match, onClose }: MatchSimulatorProps) 
 
   return (
     <div className={styles['match-simulator']}>
-      <h3>Simulate Match</h3>
+      <div className={styles['simulator-header']}>
+        <h3>Simulate Match</h3>
+        <button className={styles['close-button']} onClick={handleClose}>
+          ← Back
+        </button>
+      </div>
       
       <div className={styles['match-preview']}>
         <div className={styles['team-preview']}>
