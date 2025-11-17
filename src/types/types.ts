@@ -64,11 +64,11 @@ export interface Player {
   
   // Map-specific proficiency
   mapProficiency?: Partial<Record<Map, number>>; // 0-100 for each map
-  
-  // Development attributes
-  potential?: number;     // 0-100: Maximum achievable skill level
-  development?: number;   // 0-100: Progress toward potential
-  morale?: number;        // 0-100: Current morale state
+
+  // Development attributes                                                                            │
+  potential?: number;     // 0-100: Maximum achievable skill level                                     │
+  development?: number;   // 0-100: Progress toward potential                                          │
+  morale?: number;        // 0-100: Current morale state                                               │
   form?: number;          // 0-100: Current performance form
 }
 
@@ -101,6 +101,69 @@ export interface Team {
   // Team-level map practice tracking
   lastPracticedMaps: Partial<Record<Map, Date>>; // Track when team last practiced each map
   mapPracticeLevel: Partial<Record<Map, number>>; // 0-100 proficiency from practice/scrims
+}
+
+// Round event types
+export type RoundEventType = 
+  | 'round_start'
+  | 'kill'
+  | 'trade_kill'
+  | 'bomb_plant'
+  | 'bomb_defuse_start'
+  | 'bomb_defuse_complete'
+  | 'bomb_explode'
+  | 'round_end';
+
+export interface RoundEvent {
+  timestamp: number;      // Seconds from round start (0-135)
+  type: RoundEventType;
+  playerId?: string;
+  playerName?: string;
+  targetId?: string;      // For kills
+  targetName?: string;
+  weapon?: string;
+  isHeadshot?: boolean;
+  isFirstBlood?: boolean;
+  isTrade?: boolean;      // Kill was a trade (within 1s of teammate death)
+  tradedPlayerId?: string; // Who was traded
+  clutchSituation?: string; // e.g., "1v3", "1v2"
+  site?: 'A' | 'B' | 'C';  // For plants/defuses
+}
+
+export interface RoundInfo {
+  roundNumber: number;
+  attackingTeam: 'teamA' | 'teamB';
+  winner: 'teamA' | 'teamB';
+  winCondition: 'elimination' | 'bomb_detonated' | 'bomb_defused' | 'time_expired';
+  duration: number;        // Round duration in seconds
+  
+  // Round events timeline
+  events: RoundEvent[];
+  
+  // Round summary
+  teamAPlayersAlive: number;
+  teamBPlayersAlive: number;
+  bombPlanted: boolean;
+  bombPlanter?: string;
+  bombDefuser?: string;
+  
+  // Clutch tracking
+  clutchSituation?: {
+    playerId: string;
+    playerName: string;
+    enemiesRemaining: number; // 1vX
+    won: boolean;
+  };
+  
+  // Opening duel
+  firstBlood?: {
+    killerId: string;
+    killerName: string;
+    victimId: string;
+    victimName: string;
+    timestamp: number;
+    weapon?: string;
+  };
 }
 
 // Detailed player performance stats for a single map (based on VLR.gg format)
@@ -140,13 +203,28 @@ export interface PlayerMapPerformance {
   clutchesWon: number;
   clutchesPlayed: number;
   clutchSuccessRate: number; // Percentage
+  clutch1v1: number;
+  clutch1v2: number;
+  clutch1v3: number;
+  clutch1v4: number;
+  clutch1v5: number;
   
   // Economy
   econRating: number;    // Economy efficiency rating
   
   // Plants/Defuses (situational)
-  plants?: number;
-  defuses?: number;
+  plants: number;
+  defuses: number;
+  
+  // KAST tracking internals
+  roundsWithKill: number;
+  roundsWithAssist: number;
+  roundsSurvived: number;
+  roundsTraded: number;
+  
+  // Attack/Defense splits
+  attackRoundsPlayed: number;
+  defenseRoundsPlayed: number;
 }
 
 export interface MapResult {
@@ -169,6 +247,9 @@ export interface MapResult {
   totalRounds: number;
   overtime: boolean;
   overtimeRounds?: number;
+  
+  // Complete round-by-round information
+  rounds: RoundInfo[];
 }
 
 export interface Match {
@@ -186,6 +267,84 @@ export interface Match {
     picks: Map[];        // Maps that will be played
     decider?: Map;       // Final map if needed
   };
+}
+
+// Scrim objective types
+export type ScrimObjective =
+  | 'macro_play'           // Overall strategic coordination
+  | 'site_retakes'        // Retaking planted sites
+  | 'site_executes'       // Coordinated site takes
+  | 'utility_usage'       // Ability combinations and timing
+  | 'lurk_timings'        // Solo play and flanking
+  | 'defense_setups'      // Defensive positioning
+  | 'communication'       // Team comms and callouts
+  | 'trading'             // Refrag and teamplay
+  | 'map_control';        // Early round map presence
+
+// Team composition for a scrim
+export interface ScrimComposition {
+  playerId: string;
+  playerName: string;
+  agent: Agent;
+}
+
+// Scrim opponent team
+export interface ScrimOpponent {
+  teamId: string;
+  teamName: string;
+  teamShortName: string;
+  region: Region;
+  scrimQuality: number;   // 0-100: Overall effectiveness as practice partner
+
+  // Strengths by objective (0-100 for each)
+  objectiveStrengths: Partial<Record<ScrimObjective, number>>;
+
+  // Map proficiency (0-100 for each map)
+  mapStrengths: Partial<Record<Map, number>>;
+}
+
+// Scrim session configuration
+export interface ScrimSession {
+  id: string;
+  week: number;
+  date: Date;
+  map: Map;
+  objective: ScrimObjective;
+  opponent: ScrimOpponent;
+  composition: ScrimComposition[]; // Exactly 5 players
+}
+
+// Scrim result showing improvements
+export interface ScrimResult {
+  session: ScrimSession;
+
+  // Team improvements
+  teamMapProficiency: number;      // Improvement to team's map proficiency
+  objectiveProficiency: number;    // Specific objective improvement
+
+  // Individual player improvements
+  playerImprovements: {
+    playerId: string;
+    playerName: string;
+    agentProficiency: number;      // Improvement to agent proficiency (0-5)
+    statImprovements: Partial<PlayerStats>; // Stat gains from objective
+    synergyGains: {                // Synergy improvements with teammates
+      playerId: string;
+      change: number;              // -2 to +2
+    }[];
+  }[];
+
+  // Result quality based on opponent and objective match
+  qualityRating: number;           // 0-100: How effective this scrim was
+  feedback: string;                // Description of what was learned
+}
+
+// Weekly scrim tracking
+export interface WeeklyScrimData {
+  week: number;
+  scrimsCompleted: number;        // Current count (max 5)
+  scrimSessions: ScrimSession[];
+  scrimResults: ScrimResult[];
 }
 
 export interface Group {
@@ -215,84 +374,6 @@ export interface Season {
   matches: Match[];
 }
 
-// Scrim objective types
-export type ScrimObjective = 
-  | 'macro_play'           // Overall strategic coordination
-  | 'site_retakes'        // Retaking planted sites
-  | 'site_executes'       // Coordinated site takes
-  | 'utility_usage'       // Ability combinations and timing
-  | 'lurk_timings'        // Solo play and flanking
-  | 'defense_setups'      // Defensive positioning
-  | 'communication'       // Team comms and callouts
-  | 'trading'             // Refrag and teamplay
-  | 'map_control';        // Early round map presence
-
-// Team composition for a scrim
-export interface ScrimComposition {
-  playerId: string;
-  playerName: string;
-  agent: Agent;
-}
-
-// Scrim opponent team
-export interface ScrimOpponent {
-  teamId: string;
-  teamName: string;
-  teamShortName: string;
-  region: Region;
-  scrimQuality: number;   // 0-100: Overall effectiveness as practice partner
-  
-  // Strengths by objective (0-100 for each)
-  objectiveStrengths: Partial<Record<ScrimObjective, number>>;
-  
-  // Map proficiency (0-100 for each map)
-  mapStrengths: Partial<Record<Map, number>>;
-}
-
-// Scrim session configuration
-export interface ScrimSession {
-  id: string;
-  week: number;
-  date: Date;
-  map: Map;
-  objective: ScrimObjective;
-  opponent: ScrimOpponent;
-  composition: ScrimComposition[]; // Exactly 5 players
-}
-
-// Scrim result showing improvements
-export interface ScrimResult {
-  session: ScrimSession;
-  
-  // Team improvements
-  teamMapProficiency: number;      // Improvement to team's map proficiency
-  objectiveProficiency: number;    // Specific objective improvement
-  
-  // Individual player improvements
-  playerImprovements: {
-    playerId: string;
-    playerName: string;
-    agentProficiency: number;      // Improvement to agent proficiency (0-5)
-    statImprovements: Partial<PlayerStats>; // Stat gains from objective
-    synergyGains: {                // Synergy improvements with teammates
-      playerId: string;
-      change: number;              // -2 to +2
-    }[];
-  }[];
-  
-  // Result quality based on opponent and objective match
-  qualityRating: number;           // 0-100: How effective this scrim was
-  feedback: string;                // Description of what was learned
-}
-
-// Weekly scrim tracking
-export interface WeeklyScrimData {
-  week: number;
-  scrimsCompleted: number;        // Current count (max 5)
-  scrimSessions: ScrimSession[];
-  scrimResults: ScrimResult[];
-}
-
 // Utility type for game state
 export interface GameState {
   currentSeason: Season;
@@ -300,7 +381,6 @@ export interface GameState {
   allTeams: Team[];
   freeAgents: Player[];
   currentDate: Date;
-  
   // Scrim tracking
-  weeklyScrimData?: WeeklyScrimData;
+  weeklyScrimData?: WeeklyScrimData;  
 }
