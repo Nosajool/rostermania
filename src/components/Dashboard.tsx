@@ -18,8 +18,14 @@ type DashboardTab = 'overview' | 'roster' | 'schedule' | 'standings' | 'training
 
 export default function Dashboard({ teamName, region }: DashboardProps) {
   const [activeTab, setActiveTab] = useState<DashboardTab>('roster');
-  const { schedule } = useGame();
-  
+  const { schedule, resetGame } = useGame();
+
+  const handleNewFranchise = () => {
+    if (confirm('Are you sure you want to start a new franchise? All progress will be lost.')) {
+      resetGame();
+    }
+  };
+
   // Calculate wins and losses from actual match results
   const wins = schedule.filter(m => m.winner?.name === teamName).length;
   const losses = schedule.filter(m => 
@@ -65,6 +71,12 @@ export default function Dashboard({ teamName, region }: DashboardProps) {
           <div className={styles['team-info']}>
             <h1 className={styles['team-name']}>{teamName}</h1>
             <span className={styles['region-badge']}>{region}</span>
+            <button
+              className={styles['new-franchise-button']}
+              onClick={handleNewFranchise}
+            >
+              New Franchise
+            </button>
           </div>
 
           <div className={styles['season-info']}>

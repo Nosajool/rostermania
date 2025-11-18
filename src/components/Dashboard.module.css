@@ -62,6 +62,24 @@
   color: #ff4655;
 }
 
+.new-franchise-button {
+  background: rgba(255, 70, 85, 0.1);
+  color: #ff4655;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s;
+  border: 1px solid rgba(255, 70, 85, 0.3);
+}
+
+.new-franchise-button:hover {
+  background: rgba(255, 70, 85, 0.2);
+  border-color: rgba(255, 70, 85, 0.6);
+  color: #ff8a00;
+}
+
 /* Tab Navigation */
 .tab-navigation {
   background: rgba(255, 255, 255, 0.03);
