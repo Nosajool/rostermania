@@ -3,7 +3,7 @@ import type { Region, MapResult, Match, Map } from '../types/types';
 import MapResultDetails from './MapResultDetails';
 import { useGame } from '../hooks/useGame';
 import { simulateBestOf3 } from '../utils/matchSimulator';
-import './ScheduleView.css';
+import styles from './ScheduleView.module.css';
 
 interface ScheduleViewProps {
   teamName: string;
@@ -71,16 +71,16 @@ export default function ScheduleView({ teamName }: ScheduleViewProps) {
   const currentWeekUnplayed = currentWeekMatches.filter(m => !m.winner).length;
 
   return (
-    <div className="schedule-view">
-      <div className="schedule-header">
-        <div className="header-content">
+    <div className={styles['schedule-view']}>
+      <div className={styles['schedule-header']}>
+        <div className={styles['header-content']}>
           <div>
             <h2>Match Schedule - Stage 1</h2>
-            <p className="week-info">Week {currentWeek} • {currentWeekUnplayed} matches remaining</p>
+            <p className={styles['week-info']}>Week {currentWeek} • {currentWeekUnplayed} matches remaining</p>
           </div>
           {currentWeekUnplayed > 0 && (
-            <button 
-              className="simulate-week-button"
+            <button
+              className={styles['simulate-week-button']}
               onClick={handleSimulateWeek}
               disabled={isSimulating}
             >
@@ -90,29 +90,29 @@ export default function ScheduleView({ teamName }: ScheduleViewProps) {
         </div>
       </div>
 
-      <div className="schedule-layout">
+      <div className={styles['schedule-layout']}>
         {/* Match List */}
-        <div className="match-list">
+        <div className={styles['match-list']}>
           {upcomingMatches.length > 0 && (
-            <div className="match-section">
+            <div className={styles['match-section']}>
               <h3>Upcoming Matches</h3>
               {upcomingMatches.map(match => (
-                <div 
-                  key={match.id} 
-                  className={`match-card ${selectedMatch?.id === match.id ? 'selected' : ''}`}
+                <div
+                  key={match.id}
+                  className={`${styles['match-card']} ${selectedMatch?.id === match.id ? styles['selected'] : ''}`}
                   onClick={() => setSelectedMatch(match)}
                 >
-                  <div className="match-header">
-                    <span className="week-label">Week {match.week}</span>
-                    <span className="match-status upcoming">Upcoming</span>
+                  <div className={styles['match-header']}>
+                    <span className={styles['week-label']}>Week {match.week}</span>
+                    <span className={`${styles['match-status']} ${styles['upcoming']}`}>Upcoming</span>
                   </div>
-                  <div className="match-teams">
-                    <div className="team-name">{match.teamA.name}</div>
-                    <div className="match-vs">vs</div>
-                    <div className="team-name">{match.teamB.name}</div>
+                  <div className={styles['match-teams']}>
+                    <div className={styles['team-name']}>{match.teamA.name}</div>
+                    <div className={styles['match-vs']}>vs</div>
+                    <div className={styles['team-name']}>{match.teamB.name}</div>
                   </div>
-                  <button 
-                    className="simulate-button"
+                  <button
+                    className={styles['simulate-button']}
                     onClick={(e) => {
                       e.stopPropagation();
                       handleSimulateMatch(match.id);
@@ -126,28 +126,28 @@ export default function ScheduleView({ teamName }: ScheduleViewProps) {
           )}
 
           {completedMatches.length > 0 && (
-            <div className="match-section">
+            <div className={styles['match-section']}>
               <h3>Completed Matches</h3>
               {completedMatches.map(match => (
-                <div 
-                  key={match.id} 
-                  className={`match-card completed ${selectedMatch?.id === match.id ? 'selected' : ''}`}
+                <div
+                  key={match.id}
+                  className={`${styles['match-card']} ${styles['completed']} ${selectedMatch?.id === match.id ? styles['selected'] : ''}`}
                   onClick={() => setSelectedMatch(match)}
                 >
-                  <div className="match-header">
-                    <span className="week-label">Week {match.week}</span>
-                    <span className={`match-status ${match.winner?.name === teamName ? 'win' : 'loss'}`}>
+                  <div className={styles['match-header']}>
+                    <span className={styles['week-label']}>Week {match.week}</span>
+                    <span className={`${styles['match-status']} ${match.winner?.name === teamName ? styles['win'] : styles['loss']}`}>
                       {match.winner?.name === teamName ? 'Win' : 'Loss'}
                     </span>
                   </div>
-                  <div className="match-teams">
-                    <div className={`team-name ${match.winner?.name === match.teamA.name ? 'winner' : ''}`}>
+                  <div className={styles['match-teams']}>
+                    <div className={`${styles['team-name']} ${match.winner?.name === match.teamA.name ? styles['winner'] : ''}`}>
                       {match.teamA.name}
                     </div>
-                    <div className="match-score">
+                    <div className={styles['match-score']}>
                       {getMatchScore(match.maps, 'teamA')} - {getMatchScore(match.maps, 'teamB')}
                     </div>
-                    <div className={`team-name ${match.winner?.name === match.teamB.name ? 'winner' : ''}`}>
+                    <div className={`${styles['team-name']} ${match.winner?.name === match.teamB.name ? styles['winner'] : ''}`}>
                       {match.teamB.name}
                     </div>
                   </div>
@@ -158,65 +158,65 @@ export default function ScheduleView({ teamName }: ScheduleViewProps) {
         </div>
 
         {/* Match Details Panel */}
-        <div className="match-details">
+        <div className={styles['match-details']}>
           {selectedMatch ? (
             <>
-              <div className="details-header">
+              <div className={styles['details-header']}>
                 <h2>Match Details</h2>
-                <span className="week-label">Week {selectedMatch.week}</span>
+                <span className={styles['week-label']}>Week {selectedMatch.week}</span>
               </div>
 
-              <div className="matchup">
-                <div className="matchup-team">
+              <div className={styles['matchup']}>
+                <div className={styles['matchup-team']}>
                   <h3>{selectedMatch.teamA.name}</h3>
                 </div>
-                <div className="matchup-vs">VS</div>
-                <div className="matchup-team">
+                <div className={styles['matchup-vs']}>VS</div>
+                <div className={styles['matchup-team']}>
                   <h3>{selectedMatch.teamB.name}</h3>
                 </div>
               </div>
 
               {!selectedMatch.winner ? (
-                <div className="not-simulated">
+                <div className={styles['not-simulated']}>
                   <p>This match has not been played yet.</p>
-                  <button 
-                    className="simulate-button-large"
+                  <button
+                    className={styles['simulate-button-large']}
                     onClick={() => handleSimulateMatch(selectedMatch.id)}
                   >
                     Simulate Match
                   </button>
                 </div>
               ) : (
-                <div className="match-results">
-                  <div className="final-score">
-                    <span className={selectedMatch.winner?.name === selectedMatch.teamA.name ? 'winner' : ''}>
+                <div className={styles['match-results']}>
+                  <div className={styles['final-score']}>
+                    <span className={selectedMatch.winner?.name === selectedMatch.teamA.name ? styles['winner'] : ''}>
                       {selectedMatch.teamA.name}
                     </span>
-                    <span className="score">
+                    <span className={styles['score']}>
                       {getMatchScore(selectedMatch.maps || [], 'teamA')} - {getMatchScore(selectedMatch.maps || [], 'teamB')}
                     </span>
-                    <span className={selectedMatch.winner?.name === selectedMatch.teamB.name ? 'winner' : ''}>
+                    <span className={selectedMatch.winner?.name === selectedMatch.teamB.name ? styles['winner'] : ''}>
                       {selectedMatch.teamB.name}
                     </span>
                   </div>
 
-                  <div className="map-results">
+                  <div className={styles['map-results']}>
                     <h4>Map Results</h4>
                     {selectedMatch.maps?.map((mapResult, idx) => (
                       <div
                         key={idx}
-                        className={`map-result-card ${selectedMap?.map === mapResult.map ? 'selected' : ''}`}
+                        className={`${styles['map-result-card']} ${selectedMap?.map === mapResult.map ? styles['selected'] : ''}`}
                         onClick={() => setSelectedMap(selectedMap?.map === mapResult.map ? null : mapResult)}
                       >
-                        <div className="map-result-header">
-                          <span className="map-name">{mapResult.map}</span>
-                          <span className={`map-winner ${mapResult.winner === 'teamA' ? 'team-a' : 'team-b'}`}>
+                        <div className={styles['map-result-header']}>
+                          <span className={styles['map-name']}>{mapResult.map}</span>
+                          <span className={`${styles['map-winner']} ${mapResult.winner === 'teamA' ? styles['team-a'] : styles['team-b']}`}>
                             {mapResult.winner === 'teamA' ? selectedMatch.teamA.name : selectedMatch.teamB.name}
                           </span>
                         </div>
-                        <div className="map-score">
+                        <div className={styles['map-score']}>
                           {mapResult.teamAScore} - {mapResult.teamBScore}
-                          {mapResult.overtime && <span className="overtime-badge">OT</span>}
+                          {mapResult.overtime && <span className={styles['overtime-badge']}>OT</span>}
                         </div>
                       </div>
                     ))}
@@ -233,7 +233,7 @@ export default function ScheduleView({ teamName }: ScheduleViewProps) {
               )}
             </>
           ) : (
-            <div className="no-selection">
+            <div className={styles['no-selection']}>
               <p>Select a match to view details</p>
             </div>
           )}

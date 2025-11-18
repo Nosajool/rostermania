@@ -1,5 +1,5 @@
 import type { MapResult } from '../types/types';
-import './MapResultDetails.css';
+import styles from './MapResultDetails.module.css';
 
 interface MapResultDetailsProps {
   mapResult: MapResult;
@@ -9,40 +9,40 @@ interface MapResultDetailsProps {
 
 export default function MapResultDetails({ mapResult, teamAName, teamBName }: MapResultDetailsProps) {
   return (
-    <div className="map-result-details">
-      <div className="map-details-header">
+    <div className={styles['map-result-details']}>
+      <div className={styles['map-details-header']}>
         <h4>{mapResult.map} - Detailed Statistics</h4>
-        <div className="map-score-display">
-          <span className="score-large">{mapResult.teamAScore}</span>
-          <span className="score-separator">-</span>
-          <span className="score-large">{mapResult.teamBScore}</span>
+        <div className={styles['map-score-display']}>
+          <span className={styles['score-large']}>{mapResult.teamAScore}</span>
+          <span className={styles['score-separator']}>-</span>
+          <span className={styles['score-large']}>{mapResult.teamBScore}</span>
         </div>
       </div>
       
       {/* Team A Stats */}
-      <div className="team-performance-section">
-        <div className="team-performance-header">
+      <div className={styles['team-performance-section']}>
+        <div className={styles['team-performance-header']}>
           <h5>{teamAName}</h5>
-          <div className="team-rounds">
-            <span className="round-label">ATK: {mapResult.teamAAttackRounds}</span>
-            <span className="round-label">DEF: {mapResult.teamADefenseRounds}</span>
+          <div className={styles['team-rounds']}>
+            <span className={styles['round-label']}>ATK: {mapResult.teamAAttackRounds}</span>
+            <span className={styles['round-label']}>DEF: {mapResult.teamADefenseRounds}</span>
           </div>
         </div>
         
-        <div className="performance-table">
-          <div className="table-header">
-            <div className="header-cell player-cell">Player</div>
-            <div className="header-cell agent-cell">Agent</div>
-            <div className="header-cell stat-cell">ACS</div>
-            <div className="header-cell stat-cell">K</div>
-            <div className="header-cell stat-cell">D</div>
-            <div className="header-cell stat-cell">A</div>
-            <div className="header-cell stat-cell">±</div>
-            <div className="header-cell stat-cell">K/D</div>
-            <div className="header-cell stat-cell">ADR</div>
-            <div className="header-cell stat-cell-small">FK</div>
-            <div className="header-cell stat-cell-small">FD</div>
-            <div className="header-cell stat-cell">KAST%</div>
+        <div className={styles['performance-table']}>
+          <div className={styles['table-header']}>
+            <div className={`${styles['header-cell']} ${styles['player-cell']}`}>Player</div>
+            <div className={`${styles['header-cell']} ${styles['agent-cell']}`}>Agent</div>
+            <div className={`${styles['header-cell']} ${styles['stat-cell']}`}>ACS</div>
+            <div className={`${styles['header-cell']} ${styles['stat-cell']}`}>K</div>
+            <div className={`${styles['header-cell']} ${styles['stat-cell']}`}>D</div>
+            <div className={`${styles['header-cell']} ${styles['stat-cell']}`}>A</div>
+            <div className={`${styles['header-cell']} ${styles['stat-cell']}`}>±</div>
+            <div className={`${styles['header-cell']} ${styles['stat-cell']}`}>K/D</div>
+            <div className={`${styles['header-cell']} ${styles['stat-cell']}`}>ADR</div>
+            <div className={`${styles['header-cell']} ${styles['stat-cell-small']}`}>FK</div>
+            <div className={`${styles['header-cell']} ${styles['stat-cell-small']}`}>FD</div>
+            <div className={`${styles['header-cell']} ${styles['stat-cell']}`}>KAST%</div>
           </div>
           
           {mapResult.teamAPerformances
@@ -50,44 +50,44 @@ export default function MapResultDetails({ mapResult, teamAName, teamBName }: Ma
             .map(perf => {
               const kda = perf.kills - perf.deaths;
               return (
-                <div key={perf.playerId} className="table-row">
-                  <div className="cell player-cell">
-                    <span className="player-name">{perf.playerName}</span>
+                <div key={perf.playerId} className={styles['table-row']}>
+                  <div className={`${styles['cell']} ${styles['player-cell']}`}>
+                    <span className={styles['player-name']}>{perf.playerName}</span>
                   </div>
-                  <div className="cell agent-cell">
-                    <span className="agent-badge">{perf.agent}</span>
+                  <div className={`${styles['cell']} ${styles['agent-cell']}`}>
+                    <span className={styles['agent-badge']}>{perf.agent}</span>
                   </div>
-                  <div className="cell stat-cell">
-                    <span className="stat-value highlight">{perf.acs}</span>
+                  <div className={`${styles['cell']} ${styles['stat-cell']}`}>
+                    <span className={`${styles['stat-value']} ${styles['highlight']}`}>{perf.acs}</span>
                   </div>
-                  <div className="cell stat-cell">
-                    <span className="stat-value">{perf.kills}</span>
+                  <div className={`${styles['cell']} ${styles['stat-cell']}`}>
+                    <span className={styles['stat-value']}>{perf.kills}</span>
                   </div>
-                  <div className="cell stat-cell">
-                    <span className="stat-value">{perf.deaths}</span>
+                  <div className={`${styles['cell']} ${styles['stat-cell']}`}>
+                    <span className={styles['stat-value']}>{perf.deaths}</span>
                   </div>
-                  <div className="cell stat-cell">
-                    <span className="stat-value">{perf.assists}</span>
+                  <div className={`${styles['cell']} ${styles['stat-cell']}`}>
+                    <span className={styles['stat-value']}>{perf.assists}</span>
                   </div>
-                  <div className="cell stat-cell">
-                    <span className={`stat-value kda ${kda > 0 ? 'positive' : kda < 0 ? 'negative' : 'neutral'}`}>
+                  <div className={`${styles['cell']} ${styles['stat-cell']}`}>
+                    <span className={`${styles['stat-value']} ${styles['kda']} ${kda > 0 ? styles['positive'] : kda < 0 ? styles['negative'] : styles['neutral']}`}>
                       {kda > 0 ? '+' : ''}{kda}
                     </span>
                   </div>
-                  <div className="cell stat-cell">
-                    <span className="stat-value">{perf.kd.toFixed(2)}</span>
+                  <div className={`${styles['cell']} ${styles['stat-cell']}`}>
+                    <span className={styles['stat-value']}>{perf.kd.toFixed(2)}</span>
                   </div>
-                  <div className="cell stat-cell">
-                    <span className="stat-value">{perf.adr}</span>
+                  <div className={`${styles['cell']} ${styles['stat-cell']}`}>
+                    <span className={styles['stat-value']}>{perf.adr}</span>
                   </div>
-                  <div className="cell stat-cell-small">
-                    <span className="stat-value-small">{perf.firstKills}</span>
+                  <div className={`${styles['cell']} ${styles['stat-cell-small']}`}>
+                    <span className={styles['stat-value-small']}>{perf.firstKills}</span>
                   </div>
-                  <div className="cell stat-cell-small">
-                    <span className="stat-value-small">{perf.firstDeaths}</span>
+                  <div className={`${styles['cell']} ${styles['stat-cell-small']}`}>
+                    <span className={styles['stat-value-small']}>{perf.firstDeaths}</span>
                   </div>
-                  <div className="cell stat-cell">
-                    <span className="stat-value">{perf.kast}%</span>
+                  <div className={`${styles['cell']} ${styles['stat-cell']}`}>
+                    <span className={styles['stat-value']}>{perf.kast}%</span>
                   </div>
                 </div>
               );
@@ -96,29 +96,29 @@ export default function MapResultDetails({ mapResult, teamAName, teamBName }: Ma
       </div>
 
       {/* Team B Stats */}
-      <div className="team-performance-section">
-        <div className="team-performance-header team-b">
+      <div className={styles['team-performance-section']}>
+        <div className={`${styles['team-performance-header']} ${styles['team-b']}`}>
           <h5>{teamBName}</h5>
-          <div className="team-rounds">
-            <span className="round-label">ATK: {mapResult.teamBAttackRounds}</span>
-            <span className="round-label">DEF: {mapResult.teamBDefenseRounds}</span>
+          <div className={styles['team-rounds']}>
+            <span className={styles['round-label']}>ATK: {mapResult.teamBAttackRounds}</span>
+            <span className={styles['round-label']}>DEF: {mapResult.teamBDefenseRounds}</span>
           </div>
         </div>
         
-        <div className="performance-table">
-          <div className="table-header">
-            <div className="header-cell player-cell">Player</div>
-            <div className="header-cell agent-cell">Agent</div>
-            <div className="header-cell stat-cell">ACS</div>
-            <div className="header-cell stat-cell">K</div>
-            <div className="header-cell stat-cell">D</div>
-            <div className="header-cell stat-cell">A</div>
-            <div className="header-cell stat-cell">±</div>
-            <div className="header-cell stat-cell">K/D</div>
-            <div className="header-cell stat-cell">ADR</div>
-            <div className="header-cell stat-cell-small">FK</div>
-            <div className="header-cell stat-cell-small">FD</div>
-            <div className="header-cell stat-cell">KAST%</div>
+        <div className={styles['performance-table']}>
+          <div className={styles['table-header']}>
+            <div className={`${styles['header-cell']} ${styles['player-cell']}`}>Player</div>
+            <div className={`${styles['header-cell']} ${styles['agent-cell']}`}>Agent</div>
+            <div className={`${styles['header-cell']} ${styles['stat-cell']}`}>ACS</div>
+            <div className={`${styles['header-cell']} ${styles['stat-cell']}`}>K</div>
+            <div className={`${styles['header-cell']} ${styles['stat-cell']}`}>D</div>
+            <div className={`${styles['header-cell']} ${styles['stat-cell']}`}>A</div>
+            <div className={`${styles['header-cell']} ${styles['stat-cell']}`}>±</div>
+            <div className={`${styles['header-cell']} ${styles['stat-cell']}`}>K/D</div>
+            <div className={`${styles['header-cell']} ${styles['stat-cell']}`}>ADR</div>
+            <div className={`${styles['header-cell']} ${styles['stat-cell-small']}`}>FK</div>
+            <div className={`${styles['header-cell']} ${styles['stat-cell-small']}`}>FD</div>
+            <div className={`${styles['header-cell']} ${styles['stat-cell']}`}>KAST%</div>
           </div>
           
           {mapResult.teamBPerformances
@@ -126,44 +126,44 @@ export default function MapResultDetails({ mapResult, teamAName, teamBName }: Ma
             .map(perf => {
               const kda = perf.kills - perf.deaths;
               return (
-                <div key={perf.playerId} className="table-row">
-                  <div className="cell player-cell">
-                    <span className="player-name">{perf.playerName}</span>
+                <div key={perf.playerId} className={styles['table-row']}>
+                  <div className={`${styles['cell']} ${styles['player-cell']}`}>
+                    <span className={styles['player-name']}>{perf.playerName}</span>
                   </div>
-                  <div className="cell agent-cell">
-                    <span className="agent-badge">{perf.agent}</span>
+                  <div className={`${styles['cell']} ${styles['agent-cell']}`}>
+                    <span className={styles['agent-badge']}>{perf.agent}</span>
                   </div>
-                  <div className="cell stat-cell">
-                    <span className="stat-value highlight">{perf.acs}</span>
+                  <div className={`${styles['cell']} ${styles['stat-cell']}`}>
+                    <span className={`${styles['stat-value']} ${styles['highlight']}`}>{perf.acs}</span>
                   </div>
-                  <div className="cell stat-cell">
-                    <span className="stat-value">{perf.kills}</span>
+                  <div className={`${styles['cell']} ${styles['stat-cell']}`}>
+                    <span className={styles['stat-value']}>{perf.kills}</span>
                   </div>
-                  <div className="cell stat-cell">
-                    <span className="stat-value">{perf.deaths}</span>
+                  <div className={`${styles['cell']} ${styles['stat-cell']}`}>
+                    <span className={styles['stat-value']}>{perf.deaths}</span>
                   </div>
-                  <div className="cell stat-cell">
-                    <span className="stat-value">{perf.assists}</span>
+                  <div className={`${styles['cell']} ${styles['stat-cell']}`}>
+                    <span className={styles['stat-value']}>{perf.assists}</span>
                   </div>
-                  <div className="cell stat-cell">
-                    <span className={`stat-value kda ${kda > 0 ? 'positive' : kda < 0 ? 'negative' : 'neutral'}`}>
+                  <div className={`${styles['cell']} ${styles['stat-cell']}`}>
+                    <span className={`${styles['stat-value']} ${styles['kda']} ${kda > 0 ? styles['positive'] : kda < 0 ? styles['negative'] : styles['neutral']}`}>
                       {kda > 0 ? '+' : ''}{kda}
                     </span>
                   </div>
-                  <div className="cell stat-cell">
-                    <span className="stat-value">{perf.kd.toFixed(2)}</span>
+                  <div className={`${styles['cell']} ${styles['stat-cell']}`}>
+                    <span className={styles['stat-value']}>{perf.kd.toFixed(2)}</span>
                   </div>
-                  <div className="cell stat-cell">
-                    <span className="stat-value">{perf.adr}</span>
+                  <div className={`${styles['cell']} ${styles['stat-cell']}`}>
+                    <span className={styles['stat-value']}>{perf.adr}</span>
                   </div>
-                  <div className="cell stat-cell-small">
-                    <span className="stat-value-small">{perf.firstKills}</span>
+                  <div className={`${styles['cell']} ${styles['stat-cell-small']}`}>
+                    <span className={styles['stat-value-small']}>{perf.firstKills}</span>
                   </div>
-                  <div className="cell stat-cell-small">
-                    <span className="stat-value-small">{perf.firstDeaths}</span>
+                  <div className={`${styles['cell']} ${styles['stat-cell-small']}`}>
+                    <span className={styles['stat-value-small']}>{perf.firstDeaths}</span>
                   </div>
-                  <div className="cell stat-cell">
-                    <span className="stat-value">{perf.kast}%</span>
+                  <div className={`${styles['cell']} ${styles['stat-cell']}`}>
+                    <span className={styles['stat-value']}>{perf.kast}%</span>
                   </div>
                 </div>
               );

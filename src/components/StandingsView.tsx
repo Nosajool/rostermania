@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import type { Region, Team } from '../types/types';
 import { useGame } from '../hooks/useGame';
-import './StandingsView.css';
+import styles from './StandingsView.module.css';
 
 interface StandingsViewProps {
   teamName: string;
@@ -110,38 +110,38 @@ export default function StandingsView({ teamName }: StandingsViewProps) {
   const eliminatedTeams = standings.slice(8);
 
   return (
-    <div className="standings-view">
-      <div className="standings-header">
+    <div className={styles['standings-view']}>
+      <div className={styles['standings-header']}>
         <div>
           <h2>League Standings - Stage 1</h2>
           {playerTeamStanding && (
-            <p className="team-position">
-              Your team is currently <span className="rank-highlight">#{playerTeamStanding.rank}</span> in the standings
+            <p className={styles['team-position']}>
+              Your team is currently <span className={styles['rank-highlight']}>#{playerTeamStanding.rank}</span> in the standings
             </p>
           )}
         </div>
-        <div className="qualification-info">
-          <div className="qual-item playoff">
-            <span className="qual-dot"></span>
+        <div className={styles['qualification-info']}>
+          <div className={`${styles['qual-item']} ${styles['playoff']}`}>
+            <span className={styles['qual-dot']}></span>
             <span>Top 8 - Playoff Qualification</span>
           </div>
-          <div className="qual-item eliminated">
-            <span className="qual-dot"></span>
+          <div className={`${styles['qual-item']} ${styles['eliminated']}`}>
+            <span className={styles['qual-dot']}></span>
             <span>Bottom 4 - Eliminated</span>
           </div>
         </div>
       </div>
 
-      <div className="standings-table">
-        <div className="standings-table-header">
-          <div className="standings-header-cell rank-cell">#</div>
-          <div className="standings-header-cell team-cell">Team</div>
-          <div className="standings-header-cell stat-cell">W</div>
-          <div className="standings-header-cell stat-cell">L</div>
-          <div className="standings-header-cell stat-cell">Win%</div>
-          <div className="standings-header-cell stat-cell">Maps</div>
-          <div className="standings-header-cell stat-cell">MD</div>
-          <div className="standings-header-cell stat-cell">RD</div>
+      <div className={styles['standings-table']}>
+        <div className={styles['standings-table-header']}>
+          <div className={`${styles['standings-header-cell']} ${styles['rank-cell']}`}>#</div>
+          <div className={`${styles['standings-header-cell']} ${styles['team-cell']}`}>Team</div>
+          <div className={`${styles['standings-header-cell']} ${styles['stat-cell']}`}>W</div>
+          <div className={`${styles['standings-header-cell']} ${styles['stat-cell']}`}>L</div>
+          <div className={`${styles['standings-header-cell']} ${styles['stat-cell']}`}>Win%</div>
+          <div className={`${styles['standings-header-cell']} ${styles['stat-cell']}`}>Maps</div>
+          <div className={`${styles['standings-header-cell']} ${styles['stat-cell']}`}>MD</div>
+          <div className={`${styles['standings-header-cell']} ${styles['stat-cell']}`}>RD</div>
         </div>
 
         {standings.map(standing => {
@@ -152,39 +152,39 @@ export default function StandingsView({ teamName }: StandingsViewProps) {
           return (
             <div
               key={standing.team.id}
-              className={`standings-table-row ${isPlayerTeam ? 'player-team' : ''} ${isPlayoffTeam ? 'playoff' : ''} ${isEliminated ? 'eliminated' : ''}`}
+              className={`${styles['standings-table-row']} ${isPlayerTeam ? styles['player-team'] : ''} ${isPlayoffTeam ? styles['playoff'] : ''} ${isEliminated ? styles['eliminated'] : ''}`}
             >
-              <div className="standings-cell rank-cell">
-                <span className={`rank-number ${standing.rank <= 3 ? 'top-3' : ''}`}>
+              <div className={`${styles['standings-cell']} ${styles['rank-cell']}`}>
+                <span className={`${styles['rank-number']} ${standing.rank <= 3 ? styles['top-3'] : ''}`}>
                   {standing.rank}
                 </span>
               </div>
-              <div className="standings-cell team-cell">
-                <div className="team-info">
-                  <span className="team-tag">{standing.team.shortName}</span>
-                  <span className="team-name">{standing.team.name}</span>
-                  {isPlayerTeam && <span className="you-badge">YOU</span>}
+              <div className={`${styles['standings-cell']} ${styles['team-cell']}`}>
+                <div className={styles['team-info']}>
+                  <span className={styles['team-tag']}>{standing.team.shortName}</span>
+                  <span className={styles['team-name']}>{standing.team.name}</span>
+                  {isPlayerTeam && <span className={styles['you-badge']}>YOU</span>}
                 </div>
               </div>
-              <div className="standings-cell stat-cell">
-                <span className="stat-value wins">{standing.wins}</span>
+              <div className={`${styles['standings-cell']} ${styles['stat-cell']}`}>
+                <span className={`${styles['stat-value']} ${styles['wins']}`}>{standing.wins}</span>
               </div>
-              <div className="standings-cell stat-cell">
-                <span className="stat-value losses">{standing.losses}</span>
+              <div className={`${styles['standings-cell']} ${styles['stat-cell']}`}>
+                <span className={`${styles['stat-value']} ${styles['losses']}`}>{standing.losses}</span>
               </div>
-              <div className="standings-cell stat-cell">
-                <span className="stat-value">{standing.winRate.toFixed(0)}%</span>
+              <div className={`${styles['standings-cell']} ${styles['stat-cell']}`}>
+                <span className={styles['stat-value']}>{standing.winRate.toFixed(0)}%</span>
               </div>
-              <div className="standings-cell stat-cell">
-                <span className="stat-value">{standing.wins * 2 + standing.losses}</span>
+              <div className={`${styles['standings-cell']} ${styles['stat-cell']}`}>
+                <span className={styles['stat-value']}>{standing.wins * 2 + standing.losses}</span>
               </div>
-              <div className="standings-cell stat-cell">
-                <span className={`stat-value differential ${standing.mapDifferential > 0 ? 'positive' : standing.mapDifferential < 0 ? 'negative' : ''}`}>
+              <div className={`${styles['standings-cell']} ${styles['stat-cell']}`}>
+                <span className={`${styles['stat-value']} ${styles['differential']} ${standing.mapDifferential > 0 ? styles['positive'] : standing.mapDifferential < 0 ? styles['negative'] : ''}`}>
                   {standing.mapDifferential > 0 ? '+' : ''}{standing.mapDifferential}
                 </span>
               </div>
-              <div className="cell stat-cell">
-                <span className={`stat-value differential ${standing.roundDifferential > 0 ? 'positive' : standing.roundDifferential < 0 ? 'negative' : ''}`}>
+              <div className={`${styles['cell']} ${styles['stat-cell']}`}>
+                <span className={`${styles['stat-value']} ${styles['differential']} ${standing.roundDifferential > 0 ? styles['positive'] : standing.roundDifferential < 0 ? styles['negative'] : ''}`}>
                   {standing.roundDifferential > 0 ? '+' : ''}{standing.roundDifferential}
                 </span>
               </div>
@@ -194,32 +194,32 @@ export default function StandingsView({ teamName }: StandingsViewProps) {
       </div>
 
       {/* Legend */}
-      <div className="standings-legend">
+      <div className={styles['standings-legend']}>
         <h3>Column Explanations</h3>
-        <div className="legend-grid">
-          <div className="legend-item">
-            <span className="legend-label">W / L</span>
-            <span className="legend-desc">Match wins and losses</span>
+        <div className={styles['legend-grid']}>
+          <div className={styles['legend-item']}>
+            <span className={styles['legend-label']}>W / L</span>
+            <span className={styles['legend-desc']}>Match wins and losses</span>
           </div>
-          <div className="legend-item">
-            <span className="legend-label">Win%</span>
-            <span className="legend-desc">Win percentage</span>
+          <div className={styles['legend-item']}>
+            <span className={styles['legend-label']}>Win%</span>
+            <span className={styles['legend-desc']}>Win percentage</span>
           </div>
-          <div className="legend-item">
-            <span className="legend-label">Maps</span>
-            <span className="legend-desc">Total maps played</span>
+          <div className={styles['legend-item']}>
+            <span className={styles['legend-label']}>Maps</span>
+            <span className={styles['legend-desc']}>Total maps played</span>
           </div>
-          <div className="legend-item">
-            <span className="legend-label">MD</span>
-            <span className="legend-desc">Map differential (maps won - maps lost)</span>
+          <div className={styles['legend-item']}>
+            <span className={styles['legend-label']}>MD</span>
+            <span className={styles['legend-desc']}>Map differential (maps won - maps lost)</span>
           </div>
-          <div className="legend-item">
-            <span className="legend-label">RD</span>
-            <span className="legend-desc">Round differential (rounds won - rounds lost)</span>
+          <div className={styles['legend-item']}>
+            <span className={styles['legend-label']}>RD</span>
+            <span className={styles['legend-desc']}>Round differential (rounds won - rounds lost)</span>
           </div>
         </div>
-        
-        <div className="tiebreaker-info">
+
+        <div className={styles['tiebreaker-info']}>
           <h4>Tiebreaker Order</h4>
           <ol>
             <li>Head-to-head record</li>

@@ -4,7 +4,7 @@ import { useGame } from '../hooks/useGame';
 import { type TrainingFocus, applyTraining } from '../utils/playerDevelopment';
 import { calculateOverallRating } from '../utils/contractUtils';
 import TrainingResultModal from './TrainingResultModal';
-import './TrainingCenter.css';
+import styles from './TrainingCenter.module.css';
 
 export default function TrainingCenter() {
   const { playerTeam, trainPlayer } = useGame();
@@ -99,43 +99,43 @@ export default function TrainingCenter() {
   ];
 
   return (
-    <div className="training-center">
-      <div className="training-header">
+    <div className={styles['training-center']}>
+      <div className={styles['training-header']}>
         <h2>Training Center</h2>
-        <p className="training-subtitle">Develop your players through focused training programs</p>
+        <p className={styles['training-subtitle']}>Develop your players through focused training programs</p>
       </div>
 
-      <div className="training-layout">
+      <div className={styles['training-layout']}>
         {/* Player Selection */}
-        <div className="player-selection">
+        <div className={styles['player-selection']}>
           <h3>Select Player</h3>
-          <div className="player-list-training">
+          <div className={styles['player-list-training']}>
             {playerTeam.roster.map(player => {
               const overall = calculateOverallRating(player);
               const isActive = player.status !== 'reserve';
-              
+
               return (
                 <div
                   key={player.id}
-                  className={`training-player-card ${selectedPlayer?.id === player.id ? 'selected' : ''} ${!isActive ? 'reserve' : ''}`}
+                  className={`${styles['training-player-card']} ${selectedPlayer?.id === player.id ? styles['selected'] : ''} ${!isActive ? styles['reserve'] : ''}`}
                   onClick={() => setSelectedPlayer(player)}
                 >
-                  <div className="training-player-info">
+                  <div className={styles['training-player-info']}>
                     <h4>{player.name}</h4>
-                    <span className="player-role-small">{player.role}</span>
+                    <span className={styles['player-role-small']}>{player.role}</span>
                   </div>
-                  <div className="training-player-stats">
-                    <div className="stat-mini">
-                      <span className="stat-mini-label">Overall</span>
-                      <span className="stat-mini-value">{overall}</span>
+                  <div className={styles['training-player-stats']}>
+                    <div className={styles['stat-mini']}>
+                      <span className={styles['stat-mini-label']}>Overall</span>
+                      <span className={styles['stat-mini-value']}>{overall}</span>
                     </div>
-                    <div className="stat-mini">
-                      <span className="stat-mini-label">Potential</span>
-                      <span className="stat-mini-value">{player.potential || '?'}</span>
+                    <div className={styles['stat-mini']}>
+                      <span className={styles['stat-mini-label']}>Potential</span>
+                      <span className={styles['stat-mini-value']}>{player.potential || '?'}</span>
                     </div>
-                    <div className="stat-mini">
-                      <span className="stat-mini-label">Morale</span>
-                      <span className={`stat-mini-value morale ${getMoraleClass(player.morale || 70)}`}>
+                    <div className={styles['stat-mini']}>
+                      <span className={styles['stat-mini-label']}>Morale</span>
+                      <span className={`${styles['stat-mini-value']} ${styles['morale']} ${styles[getMoraleClass(player.morale || 70)]}`}>
                         {player.morale || 70}
                       </span>
                     </div>
@@ -147,26 +147,26 @@ export default function TrainingCenter() {
         </div>
 
         {/* Training Options */}
-        <div className="training-options">
+        <div className={styles['training-options']}>
           {selectedPlayer ? (
             <>
-              <div className="selected-player-header">
+              <div className={styles['selected-player-header']}>
                 <h3>Training for {selectedPlayer.name}</h3>
-                <div className="player-dev-info">
-                  <div className="dev-stat">
+                <div className={styles['player-dev-info']}>
+                  <div className={styles['dev-stat']}>
                     <span>Development:</span>
-                    <div className="dev-bar">
-                      <div 
-                        className="dev-bar-fill"
+                    <div className={styles['dev-bar']}>
+                      <div
+                        className={styles['dev-bar-fill']}
                         style={{ width: `${selectedPlayer.development || 0}%` }}
                       />
                     </div>
                     <span>{selectedPlayer.development || 0}%</span>
                   </div>
-                  <div className="dev-stat">
+                  <div className={styles['dev-stat']}>
                     <span>Form:</span>
-                    <div className="form-indicator" style={{ 
-                      backgroundColor: getFormColor(selectedPlayer.form || 70) 
+                    <div className={styles['form-indicator']} style={{
+                      backgroundColor: getFormColor(selectedPlayer.form || 70)
                     }}>
                       {selectedPlayer.form || 70}
                     </div>
@@ -175,33 +175,33 @@ export default function TrainingCenter() {
               </div>
 
               <h4>Select Training Focus</h4>
-              <div className="training-options-grid">
+              <div className={styles['training-options-grid']}>
                 {trainingOptions.map(option => (
                   <div
                     key={option.focus}
-                    className={`training-option ${selectedFocus === option.focus ? 'selected' : ''}`}
+                    className={`${styles['training-option']} ${selectedFocus === option.focus ? styles['selected'] : ''}`}
                     onClick={() => setSelectedFocus(option.focus)}
                   >
-                    <div className="option-header">
-                      <span className="option-icon">{option.label}</span>
+                    <div className={styles['option-header']}>
+                      <span className={styles['option-icon']}>{option.label}</span>
                     </div>
-                    <p className="option-description">{option.description}</p>
-                    <div className="option-stats">
-                      <span className="stats-label">Improves:</span>
-                      <span className="stats-list">{option.stats}</span>
+                    <p className={styles['option-description']}>{option.description}</p>
+                    <div className={styles['option-stats']}>
+                      <span className={styles['stats-label']}>Improves:</span>
+                      <span className={styles['stats-list']}>{option.stats}</span>
                     </div>
                   </div>
                 ))}
               </div>
 
-              <div className="training-actions">
-                <button className="train-button" onClick={handleTrain}>
+              <div className={styles['training-actions']}>
+                <button className={styles['train-button']} onClick={handleTrain}>
                   Begin Training
                 </button>
               </div>
 
               {/* Development Tips */}
-              <div className="training-tips">
+              <div className={styles['training-tips']}>
                 <h4>💡 Development Tips</h4>
                 <ul>
                   <li>Young players (under 23) develop faster</li>
@@ -213,7 +213,7 @@ export default function TrainingCenter() {
               </div>
             </>
           ) : (
-            <div className="no-player-selected">
+            <div className={styles['no-player-selected']}>
               <p>Select a player to begin training</p>
             </div>
           )}

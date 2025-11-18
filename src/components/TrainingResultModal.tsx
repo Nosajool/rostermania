@@ -1,6 +1,6 @@
 import type { Player, PlayerStats } from '../types/types';
 import { calculateOverallRating } from '../utils/contractUtils';
-import './TrainingResultModal.css';
+import styles from './TrainingResultModal.module.css';
 
 interface TrainingResultModalProps {
   playerBefore: Player;
@@ -64,29 +64,29 @@ export default function TrainingResultModal({
   const effectiveness = calculateEffectiveness(statChanges.length + agentChanges.length, moraleAfter);
 
   return (
-    <div className="training-result-overlay" onClick={onClose}>
-      <div className="training-result-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="result-header">
+    <div className={styles['training-result-overlay']} onClick={onClose}>
+      <div className={styles['training-result-modal']} onClick={(e) => e.stopPropagation()}>
+        <div className={styles['result-header']}>
           <div>
             <h2>Training Complete</h2>
-            <p className="training-type">{trainingFocus}</p>
+            <p className={styles['training-type']}>{trainingFocus}</p>
           </div>
-          <button className="close-btn" onClick={onClose}>×</button>
+          <button className={styles['close-btn']} onClick={onClose}>×</button>
         </div>
 
-        <div className="result-content">
+        <div className={styles['result-content']}>
           {/* Player Summary */}
-          <div className="player-summary-result">
-            <div className="player-name-large">{playerAfter.name}</div>
-            <div className="overall-change">
-              <div className="overall-stat">
-                <span className="label">Overall Rating</span>
-                <div className="rating-comparison">
-                  <span className="old-rating">{overallBefore}</span>
-                  <span className="arrow">→</span>
-                  <span className="new-rating">{overallAfter}</span>
+          <div className={styles['player-summary-result']}>
+            <div className={styles['player-name-large']}>{playerAfter.name}</div>
+            <div className={styles['overall-change']}>
+              <div className={styles['overall-stat']}>
+                <span className={styles['label']}>Overall Rating</span>
+                <div className={styles['rating-comparison']}>
+                  <span className={styles['old-rating']}>{overallBefore}</span>
+                  <span className={styles['arrow']}>→</span>
+                  <span className={styles['new-rating']}>{overallAfter}</span>
                   {overallChange > 0 && (
-                    <span className="rating-change positive">+{overallChange}</span>
+                    <span className={`${styles['rating-change']} ${styles['positive']}`}>+{overallChange}</span>
                   )}
                 </div>
               </div>
@@ -94,11 +94,11 @@ export default function TrainingResultModal({
           </div>
 
           {/* Effectiveness Badge */}
-          <div className={`effectiveness-badge ${effectiveness.class}`}>
-            <span className="effectiveness-icon">{effectiveness.icon}</span>
-            <div className="effectiveness-info">
-              <span className="effectiveness-label">Training Effectiveness</span>
-              <span className="effectiveness-rating">{effectiveness.label}</span>
+          <div className={`${styles['effectiveness-badge']} ${styles[effectiveness.class]}`}>
+            <span className={styles['effectiveness-icon']}>{effectiveness.icon}</span>
+            <div className={styles['effectiveness-info']}>
+              <span className={styles['effectiveness-label']}>Training Effectiveness</span>
+              <span className={styles['effectiveness-rating']}>{effectiveness.label}</span>
             </div>
           </div>
 
@@ -106,30 +106,30 @@ export default function TrainingResultModal({
             <>
               {/* Stat Changes */}
               {statChanges.length > 0 && (
-                <div className="changes-section">
+                <div className={styles['changes-section']}>
                   <h3>Stat Improvements</h3>
-                  <div className="stat-changes-grid">
+                  <div className={styles['stat-changes-grid']}>
                     {statChanges.map(({ stat, before, after, change }) => (
-                      <div key={stat} className="stat-change-item">
-                        <div className="stat-change-header">
-                          <span className="stat-name-result">{formatStatName(stat)}</span>
-                          <span className="stat-change-value positive">+{change}</span>
+                      <div key={stat} className={styles['stat-change-item']}>
+                        <div className={styles['stat-change-header']}>
+                          <span className={styles['stat-name-result']}>{formatStatName(stat)}</span>
+                          <span className={`${styles['stat-change-value']} ${styles['positive']}`}>+{change}</span>
                         </div>
-                        <div className="stat-progress">
-                          <div className="stat-bar-container">
-                            <div 
-                              className="stat-bar-before"
+                        <div className={styles['stat-progress']}>
+                          <div className={styles['stat-bar-container']}>
+                            <div
+                              className={styles['stat-bar-before']}
                               style={{ width: `${before}%` }}
                             />
-                            <div 
-                              className="stat-bar-after"
+                            <div
+                              className={styles['stat-bar-after']}
                               style={{ width: `${after}%` }}
                             />
                           </div>
-                          <div className="stat-values">
-                            <span className="stat-value-old">{before}</span>
-                            <span className="stat-value-arrow">→</span>
-                            <span className="stat-value-new">{after}</span>
+                          <div className={styles['stat-values']}>
+                            <span className={styles['stat-value-old']}>{before}</span>
+                            <span className={styles['stat-value-arrow']}>→</span>
+                            <span className={styles['stat-value-new']}>{after}</span>
                           </div>
                         </div>
                       </div>
@@ -140,21 +140,21 @@ export default function TrainingResultModal({
 
               {/* Agent Pool Changes */}
               {agentChanges.length > 0 && (
-                <div className="changes-section">
+                <div className={styles['changes-section']}>
                   <h3>Agent Proficiency</h3>
-                  <div className="agent-changes-grid">
+                  <div className={styles['agent-changes-grid']}>
                     {agentChanges.map(({ agent, before, after, change }) => (
-                      <div key={agent} className="agent-change-item">
-                        <span className="agent-name-result">{agent}</span>
-                        <div className="agent-change-bar">
-                          <div className="agent-bar-bg">
-                            <div 
-                              className="agent-bar-fill"
+                      <div key={agent} className={styles['agent-change-item']}>
+                        <span className={styles['agent-name-result']}>{agent}</span>
+                        <div className={styles['agent-change-bar']}>
+                          <div className={styles['agent-bar-bg']}>
+                            <div
+                              className={styles['agent-bar-fill']}
                               style={{ width: `${after}%` }}
                             />
                           </div>
-                          <span className="agent-change-text">
-                            {before} → {after} <span className="change-plus">+{change}</span>
+                          <span className={styles['agent-change-text']}>
+                            {before} → {after} <span className={styles['change-plus']}>+{change}</span>
                           </span>
                         </div>
                       </div>
@@ -164,30 +164,30 @@ export default function TrainingResultModal({
               )}
 
               {/* Development Progress */}
-              <div className="development-section">
-                <div className="dev-row">
-                  <span className="dev-label">Development Progress</span>
-                  <div className="dev-progress-bar">
-                    <div 
-                      className="dev-progress-fill"
+              <div className={styles['development-section']}>
+                <div className={styles['dev-row']}>
+                  <span className={styles['dev-label']}>Development Progress</span>
+                  <div className={styles['dev-progress-bar']}>
+                    <div
+                      className={styles['dev-progress-fill']}
                       style={{ width: `${playerAfter.development || 0}%` }}
                     />
                   </div>
-                  <span className="dev-value">
+                  <span className={styles['dev-value']}>
                     {playerAfter.development?.toFixed(1) || 0}%
                     {developmentChange > 0 && (
-                      <span className="dev-change"> (+{developmentChange.toFixed(1)}%)</span>
+                      <span className={styles['dev-change']}> (+{developmentChange.toFixed(1)}%)</span>
                     )}
                   </span>
                 </div>
               </div>
             </>
           ) : (
-            <div className="no-changes">
-              <div className="no-changes-icon">😐</div>
+            <div className={styles['no-changes']}>
+              <div className={styles['no-changes-icon']}>😐</div>
               <h3>No Stat Improvements</h3>
               <p>Training didn't result in any stat changes this time.</p>
-              <div className="no-changes-tips">
+              <div className={styles['no-changes-tips']}>
                 <strong>Tips for better results:</strong>
                 <ul>
                   <li>Higher morale increases success rate</li>
@@ -200,8 +200,8 @@ export default function TrainingResultModal({
           )}
         </div>
 
-        <div className="result-footer">
-          <button className="continue-button" onClick={onClose}>
+        <div className={styles['result-footer']}>
+          <button className={styles['continue-button']} onClick={onClose}>
             Continue
           </button>
         </div>

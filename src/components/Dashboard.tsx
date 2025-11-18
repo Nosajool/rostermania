@@ -7,7 +7,7 @@ import ScrimCenter from './ScrimCenter'
 import StandingsView from './StandingsView';
 import TrainingCenter from './TrainingCenter';
 import { useGame } from '../hooks/useGame';
-import './Dashboard.css';
+import styles from './Dashboard.module.css';
 
 interface DashboardProps {
   teamName: string;
@@ -58,56 +58,56 @@ export default function Dashboard({ teamName, region }: DashboardProps) {
   });
 
   return (
-    <div className="dashboard">
+    <div className={styles['dashboard']}>
       {/* Top Navigation Bar */}
-      <nav className="dashboard-nav">
-        <div className="nav-content">
-          <div className="team-info">
-            <h1 className="team-name">{teamName}</h1>
-            <span className="region-badge">{region}</span>
+      <nav className={styles['dashboard-nav']}>
+        <div className={styles['nav-content']}>
+          <div className={styles['team-info']}>
+            <h1 className={styles['team-name']}>{teamName}</h1>
+            <span className={styles['region-badge']}>{region}</span>
           </div>
-          
-          <div className="season-info">
-            <span className="season-label">Season 2025</span>
-            <span className="stage-label">Stage 1 - Week 1</span>
+
+          <div className={styles['season-info']}>
+            <span className={styles['season-label']}>Season 2025</span>
+            <span className={styles['stage-label']}>Stage 1 - Week 1</span>
           </div>
         </div>
       </nav>
 
       {/* Tab Navigation */}
-      <div className="tab-navigation">
+      <div className={styles['tab-navigation']}>
         <button
-          className={`tab-button ${activeTab === 'overview' ? 'active' : ''}`}
+          className={`${styles['tab-button']} ${activeTab === 'overview' ? styles['active'] : ''}`}
           onClick={() => setActiveTab('overview')}
         >
           Overview
         </button>
         <button
-          className={`tab-button ${activeTab === 'roster' ? 'active' : ''}`}
+          className={`${styles['tab-button']} ${activeTab === 'roster' ? styles['active'] : ''}`}
           onClick={() => setActiveTab('roster')}
         >
           Roster
         </button>
         <button
-          className={`tab-button ${activeTab === 'schedule' ? 'active' : ''}`}
+          className={`${styles['tab-button']} ${activeTab === 'schedule' ? styles['active'] : ''}`}
           onClick={() => setActiveTab('schedule')}
         >
           Schedule
         </button>
         <button
-          className={`tab-button ${activeTab === 'standings' ? 'active' : ''}`}
+          className={`${styles['tab-button']} ${activeTab === 'standings' ? styles['active'] : ''}`}
           onClick={() => setActiveTab('standings')}
         >
           Standings
         </button>
         <button
-          className={`tab-button ${activeTab === 'training' ? 'active' : ''}`}
+          className={`${styles['tab-button']} ${activeTab === 'training' ? styles['active'] : ''}`}
           onClick={() => setActiveTab('training')}
         >
           Training
         </button>
         <button
-          className={`tab-button ${activeTab === 'scrims' ? 'active' : ''}`}
+          className={`${styles['tab-button']} ${activeTab === 'scrims' ? styles['active'] : ''}`}
           onClick={() => setActiveTab('scrims')}
         >
           Scrims
@@ -115,26 +115,26 @@ export default function Dashboard({ teamName, region }: DashboardProps) {
       </div>
 
       {/* Content Area */}
-      <div className="dashboard-content">
+      <div className={styles['dashboard-content']}>
         {activeTab === 'overview' && (
-          <div className="overview-tab">
+          <div className={styles['overview-tab']}>
             <h2>Team Overview</h2>
-            <div className="stats-grid">
-              <div className="stat-card">
-                <span className="stat-label">Record</span>
-                <span className="stat-value">{wins}-{losses}</span>
+            <div className={styles['stats-grid']}>
+              <div className={styles['stat-card']}>
+                <span className={styles['stat-label']}>Record</span>
+                <span className={styles['stat-value']}>{wins}-{losses}</span>
               </div>
-              <div className="stat-card">
-                <span className="stat-label">Map Differential</span>
-                <span className="stat-value">{mapDifferential > 0 ? '+' : ''}{mapDifferential}</span>
+              <div className={styles['stat-card']}>
+                <span className={styles['stat-label']}>Map Differential</span>
+                <span className={styles['stat-value']}>{mapDifferential > 0 ? '+' : ''}{mapDifferential}</span>
               </div>
-              <div className="stat-card">
-                <span className="stat-label">Round Differential</span>
-                <span className="stat-value">{roundDifferential > 0 ? '+' : ''}{roundDifferential}</span>
+              <div className={styles['stat-card']}>
+                <span className={styles['stat-label']}>Round Differential</span>
+                <span className={styles['stat-value']}>{roundDifferential > 0 ? '+' : ''}{roundDifferential}</span>
               </div>
-              <div className="stat-card">
-                <span className="stat-label">Budget</span>
-                <span className="stat-value">$2.5M</span>
+              <div className={styles['stat-card']}>
+                <span className={styles['stat-label']}>Budget</span>
+                <span className={styles['stat-value']}>$2.5M</span>
               </div>
             </div>
 

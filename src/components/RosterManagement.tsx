@@ -4,7 +4,7 @@ import { useGame } from '../hooks/useGame';
 import { generateTier2FreeAgents } from '../utils/freeAgentGenerator';
 import { formatSalary, calculateTeamSalary, getRemainingBudget } from '../utils/contractUtils';
 import ContractNegotiation from './ContractNegotiation';
-import './RosterManagement.css';
+import styles from './RosterManagement.module.css';
 
 interface RosterManagementProps {
   teamName: string;
@@ -105,33 +105,33 @@ export default function RosterManagement({ teamName, onBack }: RosterManagementP
   const roles: FilterRole[] = ['All', 'Duelist', 'Initiator', 'Controller', 'Sentinel', 'Flex'];
 
   return (
-    <div className="roster-management">
-      <div className="management-header">
+    <div className={styles['roster-management']}>
+      <div className={styles['management-header']}>
         <div>
           <h2>Roster Management</h2>
-          <p className="roster-count">
+          <p className={styles['roster-count']}>
             Active: {activePlayers.length}/5 • Reserve: {reservePlayers.length}/3 •
             Salary: {formatSalary(teamSalary)} / {formatSalary(playerTeam.budget)} •
             Available: {formatSalary(remainingBudget)}
           </p>
         </div>
         {onBack && (
-          <button className="back-button" onClick={onBack}>
+          <button className={styles['back-button']} onClick={onBack}>
             ← Back to Roster
           </button>
         )}
       </div>
 
       {/* View Toggle */}
-      <div className="view-toggle">
-        <button 
-          className={`toggle-button ${view === 'current' ? 'active' : ''}`}
+      <div className={styles['view-toggle']}>
+        <button
+          className={`${styles['toggle-button']} ${view === 'current' ? styles['active'] : ''}`}
           onClick={() => setView('current')}
         >
           Current Roster ({playerTeam.roster.length})
         </button>
-        <button 
-          className={`toggle-button ${view === 'free-agents' ? 'active' : ''}`}
+        <button
+          className={`${styles['toggle-button']} ${view === 'free-agents' ? styles['active'] : ''}`}
           onClick={() => setView('free-agents')}
         >
           Free Agents ({freeAgents.length})
@@ -140,13 +140,13 @@ export default function RosterManagement({ teamName, onBack }: RosterManagementP
 
       {/* Role Filter (for free agents view) */}
       {view === 'free-agents' && (
-        <div className="role-filter">
-          <span className="filter-label">Filter by Role:</span>
-          <div className="role-buttons">
+        <div className={styles['role-filter']}>
+          <span className={styles['filter-label']}>Filter by Role:</span>
+          <div className={styles['role-buttons']}>
             {roles.map(role => (
               <button
                 key={role}
-                className={`role-button ${filterRole === role ? 'active' : ''}`}
+                className={`${styles['role-button']} ${filterRole === role ? styles['active'] : ''}`}
                 onClick={() => setFilterRole(role)}
               >
                 {role}
@@ -156,35 +156,35 @@ export default function RosterManagement({ teamName, onBack }: RosterManagementP
         </div>
       )}
 
-      <div className="management-layout">
+      <div className={styles['management-layout']}>
         {/* Player List */}
-        <div className="player-list">
+        <div className={styles['player-list']}>
           {view === 'current' ? (
             <>
               <h3>Active Roster ({activePlayers.length}/5)</h3>
               {activePlayers.map(player => (
                 <div
                   key={player.id}
-                  className={`player-card ${selectedPlayer?.id === player.id ? 'selected' : ''}`}
+                  className={`${styles['player-card']} ${selectedPlayer?.id === player.id ? styles['selected'] : ''}`}
                   onClick={() => setSelectedPlayer(player)}
                 >
-                  <div className="player-card-header">
-                    <div className="player-basic-info">
+                  <div className={styles['player-card-header']}>
+                    <div className={styles['player-basic-info']}>
                       <h4>{player.name}</h4>
-                      <span className="player-age">Age: {player.age}</span>
+                      <span className={styles['player-age']}>Age: {player.age}</span>
                     </div>
-                    <span className="player-role-badge">{player.role}</span>
+                    <span className={styles['player-role-badge']}>{player.role}</span>
                   </div>
-                  <div className="player-quick-stats">
-                    <div className="quick-stat">
-                      <span className="stat-label">Overall</span>
-                      <span className="stat-value">
+                  <div className={styles['player-quick-stats']}>
+                    <div className={styles['quick-stat']}>
+                      <span className={styles['stat-label']}>Overall</span>
+                      <span className={styles['stat-value']}>
                         {Math.round(Object.values(player.stats).reduce((a, b) => a + b, 0) / 9)}
                       </span>
                     </div>
-                    <div className="quick-stat">
-                      <span className="stat-label">Salary</span>
-                      <span className="stat-value">
+                    <div className={styles['quick-stat']}>
+                      <span className={styles['stat-label']}>Salary</span>
+                      <span className={styles['stat-value']}>
                         {player.contract ? formatSalary(player.contract.salary) : 'N/A'}
                       </span>
                     </div>
@@ -192,34 +192,34 @@ export default function RosterManagement({ teamName, onBack }: RosterManagementP
                 </div>
               ))}
 
-              <h3 className="reserve-header">Reserve ({reservePlayers.length}/3)</h3>
+              <h3 className={styles['reserve-header']}>Reserve ({reservePlayers.length}/3)</h3>
               {reservePlayers.length === 0 ? (
-                <p className="no-reserves">No reserve players</p>
+                <p className={styles['no-reserves']}>No reserve players</p>
               ) : (
                 reservePlayers.map(player => (
                   <div
                     key={player.id}
-                    className={`player-card reserve ${selectedPlayer?.id === player.id ? 'selected' : ''}`}
+                    className={`${styles['player-card']} ${styles['reserve']} ${selectedPlayer?.id === player.id ? styles['selected'] : ''}`}
                     onClick={() => setSelectedPlayer(player)}
                   >
-                    <div className="player-card-header">
-                      <div className="player-basic-info">
+                    <div className={styles['player-card-header']}>
+                      <div className={styles['player-basic-info']}>
                         <h4>{player.name}</h4>
-                        <span className="player-age">Age: {player.age}</span>
-                        <span className="reserve-badge">RESERVE</span>
+                        <span className={styles['player-age']}>Age: {player.age}</span>
+                        <span className={styles['reserve-badge']}>RESERVE</span>
                       </div>
-                      <span className="player-role-badge">{player.role}</span>
+                      <span className={styles['player-role-badge']}>{player.role}</span>
                     </div>
-                    <div className="player-quick-stats">
-                      <div className="quick-stat">
-                        <span className="stat-label">Overall</span>
-                        <span className="stat-value">
+                    <div className={styles['player-quick-stats']}>
+                      <div className={styles['quick-stat']}>
+                        <span className={styles['stat-label']}>Overall</span>
+                        <span className={styles['stat-value']}>
                           {Math.round(Object.values(player.stats).reduce((a, b) => a + b, 0) / 9)}
                         </span>
                       </div>
-                      <div className="quick-stat">
-                        <span className="stat-label">Salary</span>
-                        <span className="stat-value">
+                      <div className={styles['quick-stat']}>
+                        <span className={styles['stat-label']}>Salary</span>
+                        <span className={styles['stat-value']}>
                           {player.contract ? formatSalary(player.contract.salary) : 'N/A'}
                         </span>
                       </div>
@@ -232,32 +232,32 @@ export default function RosterManagement({ teamName, onBack }: RosterManagementP
             <>
               <h3>Available Free Agents</h3>
               {filteredFreeAgents.length === 0 ? (
-                <p className="no-agents">No free agents match your filter</p>
+                <p className={styles['no-agents']}>No free agents match your filter</p>
               ) : (
                 filteredFreeAgents.map(agent => (
                   <div
                     key={agent.id}
-                    className={`player-card free-agent ${selectedFreeAgent?.id === agent.id ? 'selected' : ''}`}
+                    className={`${styles['player-card']} ${styles['free-agent']} ${selectedFreeAgent?.id === agent.id ? styles['selected'] : ''}`}
                     onClick={() => setSelectedFreeAgent(agent)}
                   >
-                    <div className="player-card-header">
-                      <div className="player-basic-info">
+                    <div className={styles['player-card-header']}>
+                      <div className={styles['player-basic-info']}>
                         <h4>{agent.name}</h4>
-                        <span className="player-age">Age: {agent.age}</span>
-                        <span className="tier-badge">Tier 2</span>
+                        <span className={styles['player-age']}>Age: {agent.age}</span>
+                        <span className={styles['tier-badge']}>Tier 2</span>
                       </div>
-                      <span className="player-role-badge">{agent.role}</span>
+                      <span className={styles['player-role-badge']}>{agent.role}</span>
                     </div>
-                    <div className="player-quick-stats">
-                      <div className="quick-stat">
-                        <span className="stat-label">Overall</span>
-                        <span className="stat-value">
+                    <div className={styles['player-quick-stats']}>
+                      <div className={styles['quick-stat']}>
+                        <span className={styles['stat-label']}>Overall</span>
+                        <span className={styles['stat-value']}>
                           {Math.round(Object.values(agent.stats).reduce((a, b) => a + b, 0) / 9)}
                         </span>
                       </div>
-                      <div className="quick-stat">
-                        <span className="stat-label">Asking Salary</span>
-                        <span className="stat-value">$200K</span>
+                      <div className={styles['quick-stat']}>
+                        <span className={styles['stat-label']}>Asking Salary</span>
+                        <span className={styles['stat-value']}>$200K</span>
                       </div>
                     </div>
                   </div>
@@ -268,31 +268,31 @@ export default function RosterManagement({ teamName, onBack }: RosterManagementP
         </div>
 
         {/* Player Details */}
-        <div className="player-details-panel">
+        <div className={styles['player-details-panel']}>
           {(selectedPlayer || selectedFreeAgent) ? (
             <>
               {selectedPlayer && (
                 <>
-                  <div className="details-header">
+                  <div className={styles['details-header']}>
                     <h2>{selectedPlayer.name}</h2>
-                    <div className="action-buttons">
+                    <div className={styles['action-buttons']}>
                       {selectedPlayer.status !== 'reserve' ? (
-                        <button 
-                          className="reserve-button"
+                        <button
+                          className={styles['reserve-button']}
                           onClick={() => handleMoveToReserve(selectedPlayer)}
                         >
                           Move to Reserve
                         </button>
                       ) : (
                         <>
-                          <button 
-                            className="activate-button"
+                          <button
+                            className={styles['activate-button']}
                             onClick={() => handleMoveToActive(selectedPlayer)}
                           >
                             Move to Active
                           </button>
-                          <button 
-                            className="release-button"
+                          <button
+                            className={styles['release-button']}
                             onClick={() => handleReleasePlayer(selectedPlayer)}
                           >
                             Release Player
@@ -307,10 +307,10 @@ export default function RosterManagement({ teamName, onBack }: RosterManagementP
 
               {selectedFreeAgent && (
                 <>
-                  <div className="details-header">
+                  <div className={styles['details-header']}>
                     <h2>{selectedFreeAgent.name}</h2>
-                    <button 
-                      className="sign-button"
+                    <button
+                      className={styles['sign-button']}
                       onClick={handleOpenNegotiation}
                     >
                       Negotiate Contract
@@ -321,7 +321,7 @@ export default function RosterManagement({ teamName, onBack }: RosterManagementP
               )}
             </>
           ) : (
-            <div className="no-selection">
+            <div className={styles['no-selection']}>
               <p>Select a player to view details</p>
             </div>
           )}
@@ -347,68 +347,68 @@ function PlayerDetailsView({ player, isFreeAgent = false }: { player: Player; is
   const overallRating = Math.round(Object.values(player.stats).reduce((a, b) => a + b, 0) / 9);
 
   return (
-    <div className="player-details-content">
-      <div className="player-meta-info">
-        <div className="meta-item">
-          <span className="meta-label">Age</span>
-          <span className="meta-value">{player.age}</span>
+    <div className={styles['player-details-content']}>
+      <div className={styles['player-meta-info']}>
+        <div className={styles['meta-item']}>
+          <span className={styles['meta-label']}>Age</span>
+          <span className={styles['meta-value']}>{player.age}</span>
         </div>
-        <div className="meta-item">
-          <span className="meta-label">Role</span>
-          <span className="meta-value">{player.role}</span>
+        <div className={styles['meta-item']}>
+          <span className={styles['meta-label']}>Role</span>
+          <span className={styles['meta-value']}>{player.role}</span>
         </div>
-        <div className="meta-item">
-          <span className="meta-label">Overall</span>
-          <span className="meta-value rating">{overallRating}</span>
+        <div className={styles['meta-item']}>
+          <span className={styles['meta-label']}>Overall</span>
+          <span className={`${styles['meta-value']} ${styles['rating']}`}>{overallRating}</span>
         </div>
         {isFreeAgent && (
-          <div className="meta-item">
-            <span className="meta-label">Source</span>
-            <span className="meta-value">Ascension</span>
+          <div className={styles['meta-item']}>
+            <span className={styles['meta-label']}>Source</span>
+            <span className={styles['meta-value']}>Ascension</span>
           </div>
         )}
       </div>
 
       {/* Contract Info */}
       {player.contract && (
-        <div className="contract-info-section">
+        <div className={styles['contract-info-section']}>
           <h3>Contract Details</h3>
-          <div className="contract-info-grid">
-            <div className="contract-info-item">
-              <span className="contract-label">Salary</span>
-              <span className="contract-value">{formatSalary(player.contract.salary)}/yr</span>
+          <div className={styles['contract-info-grid']}>
+            <div className={styles['contract-info-item']}>
+              <span className={styles['contract-label']}>Salary</span>
+              <span className={styles['contract-value']}>{formatSalary(player.contract.salary)}/yr</span>
             </div>
-            <div className="contract-info-item">
-              <span className="contract-label">Years Remaining</span>
-              <span className="contract-value">{player.contract.yearsRemaining} years</span>
+            <div className={styles['contract-info-item']}>
+              <span className={styles['contract-label']}>Years Remaining</span>
+              <span className={styles['contract-value']}>{player.contract.yearsRemaining} years</span>
             </div>
-            <div className="contract-info-item">
-              <span className="contract-label">Total Value</span>
-              <span className="contract-value">
+            <div className={styles['contract-info-item']}>
+              <span className={styles['contract-label']}>Total Value</span>
+              <span className={styles['contract-value']}>
                 {formatSalary(player.contract.salary * player.contract.yearsRemaining)}
               </span>
             </div>
-            <div className="contract-info-item">
-              <span className="contract-label">Buyout Clause</span>
-              <span className="contract-value">{formatSalary(player.contract.buyoutClause)}</span>
+            <div className={styles['contract-info-item']}>
+              <span className={styles['contract-label']}>Buyout Clause</span>
+              <span className={styles['contract-value']}>{formatSalary(player.contract.buyoutClause)}</span>
             </div>
           </div>
         </div>
       )}
 
-      <div className="stats-section">
+      <div className={styles['stats-section']}>
         <h3>Player Attributes</h3>
-        <div className="stats-grid">
+        <div className={styles['stats-grid']}>
           {Object.entries(player.stats).map(([stat, value]) => (
-            <div key={stat} className="stat-row">
-              <div className="stat-info">
-                <span className="stat-name">{formatStatName(stat)}</span>
-                <span className="stat-number">{value}</span>
+            <div key={stat} className={styles['stat-row']}>
+              <div className={styles['stat-info']}>
+                <span className={styles['stat-name']}>{formatStatName(stat)}</span>
+                <span className={styles['stat-number']}>{value}</span>
               </div>
-              <div className="stat-bar">
-                <div 
-                  className="stat-bar-fill"
-                  style={{ 
+              <div className={styles['stat-bar']}>
+                <div
+                  className={styles['stat-bar-fill']}
+                  style={{
                     width: `${value}%`,
                     backgroundColor: getStatColor(value)
                   }}
@@ -419,13 +419,13 @@ function PlayerDetailsView({ player, isFreeAgent = false }: { player: Player; is
         </div>
       </div>
 
-      <div className="agent-pool-section">
+      <div className={styles['agent-pool-section']}>
         <h3>Agent Pool</h3>
-        <div className="agent-pool-grid">
+        <div className={styles['agent-pool-grid']}>
           {Object.entries(player.agentPool).map(([agent, prof]) => (
-            <div key={agent} className="agent-chip">
-              <span className="agent-name">{agent}</span>
-              <span className="agent-prof">{prof}</span>
+            <div key={agent} className={styles['agent-chip']}>
+              <span className={styles['agent-name']}>{agent}</span>
+              <span className={styles['agent-prof']}>{prof}</span>
             </div>
           ))}
         </div>

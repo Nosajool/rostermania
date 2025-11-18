@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { Region } from '../types/types';
 import { getTeamsByRegion } from '../data/gameData';
-import './TeamSelection.css';
+import styles from './TeamSelection.module.css';
 
 interface TeamSelectionProps {
   onTeamSelected: (teamName: string, region: Region) => void;
@@ -31,26 +31,26 @@ export default function TeamSelection({ onTeamSelected }: TeamSelectionProps) {
   const teams = selectedRegion ? getTeamsByRegion(selectedRegion) : [];
 
   return (
-    <div className="team-selection">
-      <div className="selection-container">
-        <header className="selection-header">
+    <div className={styles['team-selection']}>
+      <div className={styles['selection-container']}>
+        <header className={styles['selection-header']}>
           <h1>Rostermania</h1>
           <p>Choose your region and team to begin your journey</p>
         </header>
 
         {/* Region Selection */}
-        <section className="region-section">
+        <section className={styles['region-section']}>
           <h2>Select Your Region</h2>
-          <div className="region-grid">
+          <div className={styles['region-grid']}>
             {regions.map((region) => (
               <button
                 key={region}
-                className={`region-card ${selectedRegion === region ? 'selected' : ''}`}
+                className={`${styles['region-card']} ${selectedRegion === region ? styles['selected'] : ''}`}
                 onClick={() => handleRegionSelect(region)}
               >
-                <div className="region-icon">{getRegionIcon(region)}</div>
+                <div className={styles['region-icon']}>{getRegionIcon(region)}</div>
                 <h3>{region}</h3>
-                <p className="region-info">12 Teams • International League</p>
+                <p className={styles['region-info']}>12 Teams • International League</p>
               </button>
             ))}
           </div>
@@ -58,24 +58,24 @@ export default function TeamSelection({ onTeamSelected }: TeamSelectionProps) {
 
         {/* Team Selection */}
         {selectedRegion && (
-          <section className="team-section">
+          <section className={styles['team-section']}>
             <h2>Select Your Team</h2>
-            <div className="team-grid">
+            <div className={styles['team-grid']}>
               {teams.map((team) => (
                 <button
                   key={team.name}
-                  className={`team-card ${selectedTeam === team.name ? 'selected' : ''}`}
+                  className={`${styles['team-card']} ${selectedTeam === team.name ? styles['selected'] : ''}`}
                   onClick={() => handleTeamSelect(team.name)}
                 >
-                  <div className="team-header">
-                    <span className="team-tag">{team.shortName}</span>
+                  <div className={styles['team-header']}>
+                    <span className={styles['team-tag']}>{team.shortName}</span>
                     <h3>{team.name}</h3>
                   </div>
-                  <div className="team-roster">
+                  <div className={styles['team-roster']}>
                     {team.roster.map((player) => (
-                      <div key={player.name} className="player-item">
-                        <span className="player-name">{player.name}</span>
-                        <span className="player-role">{player.role}</span>
+                      <div key={player.name} className={styles['player-item']}>
+                        <span className={styles['player-name']}>{player.name}</span>
+                        <span className={styles['player-role']}>{player.role}</span>
                       </div>
                     ))}
                   </div>
@@ -87,8 +87,8 @@ export default function TeamSelection({ onTeamSelected }: TeamSelectionProps) {
 
         {/* Confirm Button */}
         {selectedTeam && (
-          <div className="confirm-section">
-            <button className="confirm-button" onClick={handleConfirm}>
+          <div className={styles['confirm-section']}>
+            <button className={styles['confirm-button']} onClick={handleConfirm}>
               Start Managing {selectedTeam}
             </button>
           </div>
