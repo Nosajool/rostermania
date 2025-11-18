@@ -9,7 +9,7 @@ import {
   canAffordContract,
   calculateTeamSalary,
 } from '../utils/contractUtils';
-import './ContractNegotiation.css';
+import styles from './ContractNegotiation.module.css';
 
 interface ContractNegotiationProps {
   player: Player;
@@ -78,22 +78,22 @@ export default function ContractNegotiation({
   };
 
   return (
-    <div className="contract-modal-overlay" onClick={onCancel}>
-      <div className="contract-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
+    <div className={styles['contract-modal-overlay']} onClick={onCancel}>
+      <div className={styles['contract-modal']} onClick={(e) => e.stopPropagation()}>
+        <div className={styles['modal-header']}>
           <h2>Contract Negotiation</h2>
-          <button className="close-button" onClick={onCancel}>×</button>
+          <button className={styles['close-button']} onClick={onCancel}>×</button>
         </div>
 
-        <div className="modal-content">
+        <div className={styles['modal-content']}>
           {/* Player Info */}
-          <div className="player-summary">
-            <div className="player-info-card">
+          <div className={styles['player-summary']}>
+            <div className={styles['player-info-card']}>
               <h3>{player.name}</h3>
-              <div className="player-quick-info">
-                <span className="info-item">{player.role}</span>
-                <span className="info-item">Age {player.age}</span>
-                <span className="info-item rating">Overall: {overallRating}</span>
+              <div className={styles['player-quick-info']}>
+                <span className={styles['info-item']}>{player.role}</span>
+                <span className={styles['info-item']}>Age {player.age}</span>
+                <span className={`${styles['info-item']} ${styles['rating']}`}>Overall: {overallRating}</span>
               </div>
             </div>
           </div>
@@ -101,27 +101,29 @@ export default function ContractNegotiation({
           {negotiationStatus === 'initial' && (
             <>
               {/* Contract Terms */}
-              <div className="contract-terms">
+              <div className={styles['contract-terms']}>
                 <h4>Offer Terms</h4>
-                
-                <div className="term-row">
+
+                <div className={styles['term-row']}>
                   <label>Contract Length</label>
-                  <div className="year-selector">
+                  <div className={styles['year-selector']}>
                     {[1, 2, 3, 4].map(years => (
                       <button
                         key={years}
-                        className={`year-button ${contractYears === years ? 'active' : ''}`}
+                        className={`${styles['year-button']} ${contractYears === years ? styles['active'] : ''}`}
                         onClick={() => setContractYears(years)}
                       >
                         {years} {years === 1 ? 'Year' : 'Years'}
                       </button>
+
+
                     ))}
                   </div>
                 </div>
 
-                <div className="term-row">
+                <div className={styles['term-row']}>
                   <label>Annual Salary</label>
-                  <div className="salary-input-container">
+                  <div className={styles['salary-input-container']}>
                     <input
                       type="range"
                       min={100000}
@@ -129,49 +131,49 @@ export default function ContractNegotiation({
                       step={50000}
                       value={salary}
                       onChange={(e) => setSalary(Number(e.target.value))}
-                      className="salary-slider"
+                      className={styles['salary-slider']}
                     />
                     <input
                       type="number"
                       value={salary}
                       onChange={(e) => setSalary(Number(e.target.value))}
-                      className="salary-number-input"
+                      className={styles['salary-number-input']}
                     />
                   </div>
-                  <div className="salary-display">{formatSalary(salary)} per year</div>
-                  <div className="suggested-salary">
+                  <div className={styles['salary-display']}>{formatSalary(salary)} per year</div>
+                  <div className={styles['suggested-salary']}>
                     Suggested: {formatSalary(suggestedSalary)}
                   </div>
                 </div>
 
-                <div className="contract-summary">
-                  <div className="summary-row">
+                <div className={styles['contract-summary']}>
+                  <div className={styles['summary-row']}>
                     <span>Total Contract Value</span>
-                    <span className="summary-value">{formatSalary(salary * contractYears)}</span>
+                    <span className={styles['summary-value']}>{formatSalary(salary * contractYears)}</span>
                   </div>
-                  <div className="summary-row">
+                  <div className={styles['summary-row']}>
                     <span>Buyout Clause</span>
-                    <span className="summary-value">{formatSalary(salary * contractYears * 0.75)}</span>
+                    <span className={styles['summary-value']}>{formatSalary(salary * contractYears * 0.75)}</span>
                   </div>
-                  <div className="summary-row">
+                  <div className={styles['summary-row']}>
                     <span>Current Team Salaries</span>
-                    <span className="summary-value">{formatSalary(currentSalaries)}</span>
+                    <span className={styles['summary-value']}>{formatSalary(currentSalaries)}</span>
                   </div>
-                  <div className="summary-row important">
+                  <div className={`${styles['summary-row']} ${styles['important']}`}>
                     <span>Remaining Budget</span>
-                    <span className={`summary-value ${remainingBudget - salary < 0 ? 'negative' : ''}`}>
+                    <span className={`${styles['summary-value']} ${remainingBudget - salary < 0 ? styles['negative'] : ''}`}>
                       {formatSalary(remainingBudget - salary)}
                     </span>
                   </div>
                 </div>
               </div>
 
-              <div className="modal-actions">
-                <button className="cancel-button" onClick={onCancel}>
+              <div className={styles['modal-actions']}>
+                <button className={styles['cancel-button']} onClick={onCancel}>
                   Cancel
                 </button>
-                <button 
-                  className="propose-button"
+                <button
+                  className={styles['propose-button']}
                   onClick={handlePropose}
                   disabled={remainingBudget - salary < 0}
                 >
@@ -182,40 +184,40 @@ export default function ContractNegotiation({
           )}
 
           {negotiationStatus === 'counter' && counterOffer && (
-            <div className="negotiation-result">
-              <div className="result-icon counter">⚠️</div>
+            <div className={styles['negotiation-result']}>
+              <div className={`${styles['result-icon']} ${styles['counter']}`}>⚠️</div>
               <h3>Counter Offer Received</h3>
-              <p className="result-message">
+              <p className={styles['result-message']}>
                 {player.name} has countered your offer with the following terms:
               </p>
-              
-              <div className="counter-details">
-                <div className="detail-row">
+
+              <div className={styles['counter-details']}>
+                <div className={styles['detail-row']}>
                   <span>Salary per Year</span>
-                  <span className="detail-value">{formatSalary(counterOffer.salary)}</span>
+                  <span className={styles['detail-value']}>{formatSalary(counterOffer.salary)}</span>
                 </div>
-                <div className="detail-row">
+                <div className={styles['detail-row']}>
                   <span>Contract Length</span>
-                  <span className="detail-value">{counterOffer.yearsRemaining} years</span>
+                  <span className={styles['detail-value']}>{counterOffer.yearsRemaining} years</span>
                 </div>
-                <div className="detail-row">
+                <div className={styles['detail-row']}>
                   <span>Total Value</span>
-                  <span className="detail-value">{formatSalary(counterOffer.salary * counterOffer.yearsRemaining)}</span>
+                  <span className={styles['detail-value']}>{formatSalary(counterOffer.salary * counterOffer.yearsRemaining)}</span>
                 </div>
-                <div className="detail-row highlight">
+                <div className={`${styles['detail-row']} ${styles['highlight']}`}>
                   <span>Remaining Budget After</span>
-                  <span className={`detail-value ${remainingBudget - counterOffer.salary < 0 ? 'negative' : 'positive'}`}>
+                  <span className={`${styles['detail-value']} ${remainingBudget - counterOffer.salary < 0 ? styles['negative'] : styles['positive']}`}>
                     {formatSalary(remainingBudget - counterOffer.salary)}
                   </span>
                 </div>
               </div>
 
-              <div className="modal-actions">
-                <button className="reject-button" onClick={handleRejectCounter}>
+              <div className={styles['modal-actions']}>
+                <button className={styles['reject-button']} onClick={handleRejectCounter}>
                   Reject Offer
                 </button>
-                <button 
-                  className="accept-button"
+                <button
+                  className={styles['accept-button']}
                   onClick={handleAcceptCounter}
                   disabled={remainingBudget - counterOffer.salary < 0}
                 >
@@ -226,26 +228,26 @@ export default function ContractNegotiation({
           )}
 
           {negotiationStatus === 'accepted' && (
-            <div className="negotiation-result">
-              <div className="result-icon success">✓</div>
+            <div className={styles['negotiation-result']}>
+              <div className={`${styles['result-icon']} ${styles['success']}`}>✓</div>
               <h3>Offer Accepted!</h3>
-              <p className="result-message">
+              <p className={styles['result-message']}>
                 {player.name} has accepted your contract offer!
               </p>
-              
-              <div className="final-terms">
-                <div className="detail-row">
+
+              <div className={styles['final-terms']}>
+                <div className={styles['detail-row']}>
                   <span>Annual Salary</span>
-                  <span className="detail-value">{formatSalary(salary)}</span>
+                  <span className={styles['detail-value']}>{formatSalary(salary)}</span>
                 </div>
-                <div className="detail-row">
+                <div className={styles['detail-row']}>
                   <span>Contract Length</span>
-                  <span className="detail-value">{contractYears} years</span>
+                  <span className={styles['detail-value']}>{contractYears} years</span>
                 </div>
               </div>
 
-              <div className="modal-actions">
-                <button className="finalize-button" onClick={handleFinalSign}>
+              <div className={styles['modal-actions']}>
+                <button className={styles['finalize-button']} onClick={handleFinalSign}>
                   Sign Player
                 </button>
               </div>
@@ -253,18 +255,18 @@ export default function ContractNegotiation({
           )}
 
           {negotiationStatus === 'rejected' && (
-            <div className="negotiation-result">
-              <div className="result-icon failure">✗</div>
+            <div className={styles['negotiation-result']}>
+              <div className={`${styles['result-icon']} ${styles['failure']}`}>✗</div>
               <h3>Negotiation Failed</h3>
-              <p className="result-message">
+              <p className={styles['result-message']}>
                 {player.name} has rejected your offer. You may try again with a better offer.
               </p>
 
-              <div className="modal-actions">
-                <button className="back-button" onClick={() => setNegotiationStatus('initial')}>
+              <div className={styles['modal-actions']}>
+                <button className={styles['back-button']} onClick={() => setNegotiationStatus('initial')}>
                   Make New Offer
                 </button>
-                <button className="cancel-button" onClick={onCancel}>
+                <button className={styles['cancel-button']} onClick={onCancel}>
                   Cancel
                 </button>
               </div>
