@@ -473,20 +473,152 @@ export const PACIFIC_TEAMS = [
 ];
 
 // VCT 2025 China Teams (12 teams) - Sample data
+// VCT 2025 China Teams (12 teams) - Stage 2 Rosters
 export const CHINA_TEAMS = [
   {
     name: 'EDward Gaming',
     shortName: 'EDG',
     region: 'China' as Region,
     roster: [
-      { name: 'KangKang', role: 'Duelist' as Role },
+      { name: 'ZmjjKK', role: 'Duelist' as Role },
       { name: 'CHICHOO', role: 'Duelist' as Role },
-      { name: 'Nobody', role: 'Initiator' as Role },
+      { name: 'nobody', role: 'Initiator' as Role },
       { name: 'Smoggy', role: 'Flex' as Role },
-      { name: 'S1Mon', role: 'Sentinel' as Role },
+      { name: 'zjc', role: 'Sentinel' as Role },
     ],
   },
-  // Add more China teams...
+  {
+    name: 'Bilibili Gaming',
+    shortName: 'BLG',
+    region: 'China' as Region,
+    roster: [
+      { name: 'whzy', role: 'Duelist' as Role },
+      { name: 'Levius', role: 'Duelist' as Role },
+      { name: 'rushia', role: 'Sentinel' as Role },
+      { name: 'nephh', role: 'Controller' as Role },
+      { name: 'Knight', role: 'Initiator' as Role },
+    ],
+  },
+  {
+    name: 'Dragon Ranger Gaming',
+    shortName: 'DRG',
+    region: 'China' as Region,
+    roster: [
+      { name: 'vo0kashu', role: 'Duelist' as Role },
+      { name: 'SpiritZ1', role: 'Duelist' as Role },
+      { name: 'Akeman', role: 'Initiator' as Role },
+      { name: 'Flex1n', role: 'Controller' as Role },
+      { name: 'Ying', role: 'Sentinel' as Role },
+    ],
+  },
+  {
+    name: 'XLG Esports',
+    shortName: 'XLG',
+    region: 'China' as Region,
+    roster: [
+      { name: 'Yuicaw', role: 'Duelist' as Role },
+      { name: 'TvirusLuke', role: 'Duelist' as Role },
+      { name: 'NoMan', role: 'Initiator' as Role },
+      { name: 'Rarga', role: 'Controller' as Role },
+      { name: 'happywei', role: 'Sentinel' as Role },
+    ],
+  },
+  {
+    name: 'Trace Esports',
+    shortName: 'TE',
+    region: 'China' as Region,
+    roster: [
+      { name: 'Kai', role: 'Duelist' as Role },
+      { name: 'Xlele', role: 'Duelist' as Role },
+      { name: 'MarT1n', role: 'Initiator' as Role },
+      { name: 'Spring', role: 'Controller' as Role },
+      { name: 'Biank', role: 'Sentinel' as Role },
+    ],
+  },
+  {
+    name: 'Wolves Esports',
+    shortName: 'WOL',
+    region: 'China' as Region,
+    roster: [
+      { name: 'SiuFatBB', role: 'Duelist' as Role },
+      { name: 'juicy', role: 'Duelist' as Role },
+      { name: 'jkuro', role: 'Initiator' as Role },
+      { name: 'Lysoar', role: 'Controller' as Role },
+      { name: 'coconut', role: 'Sentinel' as Role },
+    ],
+  },
+  {
+    name: 'Titan Esports Club',
+    shortName: 'TEC',
+    region: 'China' as Region,
+    roster: [
+      { name: 'Spitfires', role: 'Duelist' as Role },
+      { name: 'Coco', role: 'Duelist' as Role },
+      { name: 'Swerl', role: 'Initiator' as Role },
+      { name: 'Nicc', role: 'Controller' as Role },
+      { name: 'stew', role: 'Sentinel' as Role },
+    ],
+  },
+  {
+    name: 'FunPlus Phoenix',
+    shortName: 'FPX',
+    region: 'China' as Region,
+    roster: [
+      { name: 'yosemite', role: 'Duelist' as Role },
+      { name: 'autumn', role: 'Duelist' as Role },
+      { name: 'BerLIN', role: 'Initiator' as Role },
+      { name: 'deLb', role: 'Controller' as Role },
+      { name: 'AAAAY', role: 'Sentinel' as Role },
+    ],
+  },
+  {
+    name: 'Nova Esports',
+    shortName: 'NOVA',
+    region: 'China' as Region,
+    roster: [
+      { name: 'Monk', role: 'Duelist' as Role },
+      { name: 'garnetS', role: 'Duelist' as Role },
+      { name: 'jemkin', role: 'Initiator' as Role },
+      { name: 'Hfmi0dzjc9z7', role: 'Controller' as Role },
+      { name: 'CNHRET', role: 'Sentinel' as Role },
+    ],
+  },
+  {
+    name: 'TYLOO',
+    shortName: 'TYL',
+    region: 'China' as Region,
+    roster: [
+      { name: 'Scales', role: 'Duelist' as Role },
+      { name: 'Yoyo', role: 'Duelist' as Role },
+      { name: 'slowly', role: 'Initiator' as Role },
+      { name: 'Hanche', role: 'Controller' as Role },
+      { name: 'Yuicaw', role: 'Sentinel' as Role },
+    ],
+  },
+  {
+    name: 'JD Gaming',
+    shortName: 'JDG',
+    region: 'China' as Region,
+    roster: [
+      { name: 'kklin', role: 'Duelist' as Role },
+      { name: 'Link7', role: 'Duelist' as Role },
+      { name: 'riya', role: 'Initiator' as Role },
+      { name: 'Sy1a', role: 'Controller' as Role },
+      { name: 'Shuai', role: 'Sentinel' as Role },
+    ],
+  },
+  {
+    name: 'All Gamers',
+    shortName: 'AG',
+    region: 'China' as Region,
+    roster: [
+      { name: 'cxyy', role: 'Duelist' as Role },
+      { name: 'XiYiJi', role: 'Duelist' as Role },
+      { name: 'Shr1mp', role: 'Initiator' as Role },
+      { name: 'Bai', role: 'Controller' as Role },
+      { name: 'TZH', role: 'Sentinel' as Role },
+    ],
+  },
 ];
 
 export const ALL_TEAMS = [
