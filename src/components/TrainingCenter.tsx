@@ -3,6 +3,7 @@ import type { Player } from '../types/types';
 import { useGame } from '../hooks/useGame';
 import { type TrainingFocus, applyTraining } from '../utils/playerDevelopment';
 import { calculateOverallRating } from '../utils/contractUtils';
+import { formatToOneDecimal } from '../utils/formatUtils';
 import TrainingResultModal from './TrainingResultModal';
 import styles from './TrainingCenter.module.css';
 
@@ -131,12 +132,12 @@ export default function TrainingCenter() {
                     </div>
                     <div className={styles['stat-mini']}>
                       <span className={styles['stat-mini-label']}>Potential</span>
-                      <span className={styles['stat-mini-value']}>{player.potential || '?'}</span>
+                      <span className={styles['stat-mini-value']}>{player.potential ? formatToOneDecimal(player.potential) : '?'}</span>
                     </div>
                     <div className={styles['stat-mini']}>
                       <span className={styles['stat-mini-label']}>Morale</span>
                       <span className={`${styles['stat-mini-value']} ${styles['morale']} ${styles[getMoraleClass(player.morale || 70)]}`}>
-                        {player.morale || 70}
+                        {formatToOneDecimal(player.morale || 70)}
                       </span>
                     </div>
                   </div>
@@ -161,14 +162,14 @@ export default function TrainingCenter() {
                         style={{ width: `${selectedPlayer.development || 0}%` }}
                       />
                     </div>
-                    <span>{selectedPlayer.development || 0}%</span>
+                    <span>{formatToOneDecimal(selectedPlayer.development || 0)}%</span>
                   </div>
                   <div className={styles['dev-stat']}>
                     <span>Form:</span>
                     <div className={styles['form-indicator']} style={{
                       backgroundColor: getFormColor(selectedPlayer.form || 70)
                     }}>
-                      {selectedPlayer.form || 70}
+                      {formatToOneDecimal(selectedPlayer.form || 70)}
                     </div>
                   </div>
                 </div>

@@ -1,5 +1,6 @@
 import type { Player, PlayerStats } from '../types/types';
 import { calculateOverallRating } from '../utils/contractUtils';
+import { formatToOneDecimal } from '../utils/formatUtils';
 import styles from './TrainingResultModal.module.css';
 
 interface TrainingResultModalProps {
@@ -174,9 +175,9 @@ export default function TrainingResultModal({
                     />
                   </div>
                   <span className={styles['dev-value']}>
-                    {playerAfter.development?.toFixed(1) || 0}%
+                    {formatToOneDecimal(playerAfter.development || 0)}%
                     {developmentChange > 0 && (
-                      <span className={styles['dev-change']}> (+{developmentChange.toFixed(1)}%)</span>
+                      <span className={styles['dev-change']}> (+{formatToOneDecimal(developmentChange)}%)</span>
                     )}
                   </span>
                 </div>
